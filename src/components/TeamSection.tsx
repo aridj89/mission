@@ -1,10 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TEAM_MEMBERS } from '../data';
-import { motion } from 'framer-motion';
+import { TeamMember } from '../types';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import TeamFlipCard from './TeamFlipCard';
 
-export default function TeamSection() {
+export default function TeamSection({ isGlobalFlipped = false }: { isGlobalFlipped?: boolean }) {
   const { t, i18n } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isRTL = i18n.language === 'ar';
@@ -14,18 +16,25 @@ export default function TeamSection() {
     // We add a tiny delay to ensure layout is calculated
     const timeout = setTimeout(() => {
       if (scrollContainerRef.current) {
-        // Find the card for 'ramy-zoubiri' (the first of the 3 founders)
-        const centerCard = document.getElementById('team-card-ramy-zoubiri');
-        if (centerCard) {
+        // Find both founder flip cards (Front face IDs)
+        const firstCard = document.getElementById('team-card-ramy-zoubiri');
+        const secondCard = document.getElementById('team-card-aridj-bouzidi');
+        
+        if (firstCard && secondCard) {
           const container = scrollContainerRef.current;
           
           if (isRTL) {
-            // For RTL, calculating scroll position is a bit different depending on browser
-            // A simple reliable way is to just use scrollIntoView
-            centerCard.scrollIntoView({ inline: 'start', block: 'nearest' });
+            // For RTL, calculating scroll position is tricky, rely on scrollIntoView
+            // Center the first card
+            secondCard.scrollIntoView({ inline: 'center', block: 'nearest' });
           } else {
-            // For LTR
-            container.scrollLeft = centerCard.offsetLeft - container.offsetLeft;
+            // For LTR, calculate exact center between both cards
+            const relativeLeftEdge = Math.min(firstCard.offsetLeft, secondCard.offsetLeft) - container.offsetLeft;
+            const relativeRightEdge = Math.max(firstCard.offsetLeft + firstCard.clientWidth, secondCard.offsetLeft + secondCard.clientWidth) - container.offsetLeft;
+            const centerOfCards = relativeLeftEdge + (relativeRightEdge - relativeLeftEdge) / 2;
+            
+            const targetScrollLeft = centerOfCards - (container.clientWidth / 2);
+            container.scrollLeft = targetScrollLeft;
           }
         }
       }
@@ -73,12 +82,27 @@ export default function TeamSection() {
               {t('team.label')}
             </motion.span>
             
-            <motion.h2 
-              variants={{ hidden: { opacity: 0, scale: 0.9, y: 20 }, visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 100 } } }}
-              className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white uppercase tracking-tight"
-            >
-              {t('team.title')}
-            </motion.h2>
+            <div className="h-24 sm:h-32 flex justify-center items-center overflow-hidden mt-4">
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={isGlobalFlipped ? "mission" : "vexa"}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex flex-col items-center gap-2 sm:gap-4"
+                >
+                  <img 
+                    src={isGlobalFlipped ? "/logo.jpg" : "/Ve.png"} 
+                    alt={isGlobalFlipped ? "Mission Verse" : "Vexa"} 
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-md object-cover shadow-lg"
+                  />
+                  <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white uppercase tracking-tight">
+                    {isGlobalFlipped ? "MISSION VERSE" : "VEXA"}
+                  </h2>
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
             <motion.p 
               variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
@@ -109,39 +133,75 @@ export default function TeamSection() {
             {/* Scrollable Area */}
             <div 
               ref={scrollContainerRef}
-              className="flex overflow-x-auto gap-3 sm:gap-8 snap-x snap-mandatory pb-4 pt-4 px-4 sm:px-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              className="flex overflow-x-auto gap-3 sm:gap-8 snap-x snap-mandatory pb-8 pt-4 px-4 sm:px-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] items-center"
             >
-              {TEAM_MEMBERS.map((member, index) => (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "0px" }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  key={member.id}
-                  className="snap-start shrink-0 w-[30vw] sm:w-[calc(33.333%-1.33rem)] relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] transition-all duration-500 rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/5] flex flex-col justify-end shadow-xl cursor-grab active:cursor-grabbing"
-                  id={`team-card-${member.id}`}
-                  whileHover={{ y: -10 }}
-                >
-                  {member.imageUrl ? (
-                    <>
-                      <img 
-                        src={member.imageUrl} 
-                        alt={member.name}
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 pointer-events-none"
+              {(() => {
+                const aridj = TEAM_MEMBERS.find(m => m.id === 'aridj-bouzidi');
+                const abdou = TEAM_MEMBERS.find(m => m.id === 'direche-abderrahmen');
+                const ramy = TEAM_MEMBERS.find(m => m.id === 'ramy-zoubiri');
+                const oussama = TEAM_MEMBERS.find(m => m.id === 'oussama-hamdaoui');
+
+                const others = TEAM_MEMBERS.filter(m => !['aridj-bouzidi', 'direche-abderrahmen', 'ramy-zoubiri', 'oussama-hamdaoui'].includes(m.id));
+                const otherCard1 = { front: others[0], back: others[1] };
+                const otherCard2 = { front: others[2], back: others[3] };
+                const otherCard3 = { front: others[4], back: others[5] };
+
+                const cardClass = "w-[45vw] sm:w-[28vw] md:w-[22vw]";
+
+                return (
+                  <>
+                    {otherCard1.front && otherCard1.back && (
+                      <TeamFlipCard 
+                        memberFront={otherCard1.front} 
+                        memberBack={otherCard1.back} 
+                        isFlipped={isGlobalFlipped} 
+                        className={cardClass}
+                        delay={0.05}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                      <div className="absolute bottom-0 left-0 p-2 sm:p-6 w-full z-10 space-y-0.5 sm:space-y-1 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 pointer-events-none">
-                        <p className="font-mono text-[5px] sm:text-[10px] text-[#0071ec] uppercase tracking-widest font-bold drop-shadow-md leading-tight">
-                          {t(`team_roles.${member.id}`)}
-                        </p>
-                        <h4 className="font-hanken text-[10px] sm:text-2xl font-bold text-white tracking-tight drop-shadow-md leading-tight">
-                          {member.name}
-                        </h4>
-                      </div>
-                    </>
-                  ) : null}
-                </motion.div>
-              ))}
+                    )}
+                    
+                    {otherCard2.front && otherCard2.back && (
+                      <TeamFlipCard 
+                        memberFront={otherCard2.front} 
+                        memberBack={otherCard2.back} 
+                        isFlipped={isGlobalFlipped} 
+                        className={cardClass}
+                        delay={0.1}
+                      />
+                    )}
+                    
+                    {ramy && oussama && (
+                      <TeamFlipCard 
+                        memberFront={ramy} 
+                        memberBack={oussama} 
+                        isFlipped={isGlobalFlipped} 
+                        className={cardClass}
+                        delay={0.15}
+                      />
+                    )}
+
+                    {aridj && abdou && (
+                      <TeamFlipCard 
+                        memberFront={aridj} 
+                        memberBack={abdou} 
+                        isFlipped={isGlobalFlipped} 
+                        className={cardClass}
+                        delay={0.2}
+                      />
+                    )}
+
+                    {otherCard3.front && otherCard3.back && (
+                      <TeamFlipCard 
+                        memberFront={otherCard3.front} 
+                        memberBack={otherCard3.back} 
+                        isFlipped={isGlobalFlipped} 
+                        className={cardClass}
+                        delay={0.25}
+                      />
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             {/* Gradient Edges to indicate scroll */}

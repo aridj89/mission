@@ -16,18 +16,21 @@ export default function App() {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<ActiveTab>('HOME');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isGlobalFlipped, setIsGlobalFlipped] = useState(false);
   const isRTL = i18n.language === 'ar';
 
-  const [logoIndex, setLogoIndex] = useState(0);
+  const [logoIndex, setLogoIndex] = useState(1);
   const [rotation, setRotation] = useState(0);
 
+  // Handle global synchronised rotation timer (Header Logo & Team Cards)
   useEffect(() => {
     const interval = setInterval(() => {
-      setRotation(prev => prev + 360);
+      setRotation(prev => prev + 180);
+      setIsGlobalFlipped(prev => !prev);
       setTimeout(() => {
-        setLogoIndex(prev => (prev + 1) % 2);
-      }, 350);
-    }, 5000);
+        setLogoIndex(prev => (prev === 0 ? 1 : 0));
+      }, 300); // Change logo halfway through rotation
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -214,7 +217,7 @@ export default function App() {
                 className="origin-center min-h-[80vh]" 
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                <TeamSection />
+                <TeamSection isGlobalFlipped={isGlobalFlipped} />
               </motion.div>
             )}
 
