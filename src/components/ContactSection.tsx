@@ -83,35 +83,35 @@ export default function ContactSection() {
 
             {/* Studio Address Glass Card */}
             <div
-              className="relative cursor-default group overflow-hidden rounded-[2rem] border transition-all duration-500 hover:border-[#0071ec]/60 hover:scale-[1.01] hover:shadow-2xl"
+              className="relative cursor-default group overflow-hidden rounded-[2rem] border blast transition-all duration-500 hover:border-[#0071ec]/60 hover:scale-[1.01] hover:shadow-2xl"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
                 borderColor: 'rgba(0,113,236,0.28)',
-                boxShadow: '0 4px 32px 0 rgba(0,113,236,0.12), inset 0 1px 0 rgba(255,255,255,0.08)',
+                boxShadow: '0 4px 32px 0 rgba(244,114,182,0.12), inset 0 1px 0 rgba(255,255,255,0.08)',
               }}
             >
               {/* Blue glow blob */}
               <div
                 className="absolute -top-12 -left-12 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none group-hover:opacity-35 transition-opacity duration-500"
-                style={{ background: 'radial-gradient(circle, rgba(0,113,236,0.7) 0%, transparent 70%)' }}
+                style={{ background: 'radial-gradient(circle, rgba(244,114,182,0.7) 0%, transparent 70%)' }}
               />
 
               <div className="relative z-10 flex items-center gap-5 p-6 sm:p-8">
                 {/* Icon box */}
                 <div
-                  className="shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl border"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(0,113,236,0.18) 0%, rgba(255,255,255,0.04) 100%)',
-                    borderColor: 'rgba(0,113,236,0.35)',
-                  }}
-                >
-                  <MapPin size={26} className="text-[#0071ec]" />
-                </div>
+                      className="shrink-0 flex items-center justify-center w-14 h-14 rounded-2xl border overflow-hidden"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(0,113,236,0.18) 0%, rgba(255,255,255,0.04) 100%)',
+                        borderColor: 'rgba(0,113,236,0.35)',
+                      }}
+                    >
+                      <img src="/logo.jpg" alt="Location logo" className="w-full h-full object-cover" />
+                    </div>
 
                 <div className="flex-1 min-w-0 space-y-1">
-                  <h3 className="font-hanken text-base sm:text-lg font-bold text-black dark:text-white tracking-tight">{OFFICE_LOCATION.name}</h3>
+                  <h3 className="font-hanken text-base sm:text-lg font-bold text-black dark:text-white tracking-tight">Mission Verse</h3>
                   <p className="font-mono text-[10px] uppercase tracking-widest font-semibold text-[#0071ec]">BATNA, ALGERIA</p>
                   <p className="font-sans text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed hidden sm:block pt-0.5">{OFFICE_LOCATION.address}</p>
                 </div>

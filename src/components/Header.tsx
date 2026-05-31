@@ -65,7 +65,7 @@ export default function Header({ activeTab, setActiveTab, isMenuOpen, setIsMenuO
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          
+
           <button 
             onClick={() => setActiveTab('HOME')} 
             className="flex items-center gap-2 hover:opacity-90 transition-opacity"
@@ -86,25 +86,22 @@ export default function Header({ activeTab, setActiveTab, isMenuOpen, setIsMenuO
         </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-8 items-center">
+        <nav className="hidden md:flex gap-2 items-center">
           {navItems.map((item) => (
             <button
-               key={item.key}
-               onClick={() => {
-                 setActiveTab(item.key);
-                 window.scrollTo({ top: 0, behavior: 'smooth' });
-               }}
-               className={`font-mono text-xs tracking-widest transition-all duration-300 relative py-1 ${
-                 activeTab === item.key 
-                   ? 'text-black dark:text-white font-semibold' 
-                   : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
-               }`}
-               id={`nav-tab-${item.key}`}
+              key={item.key}
+              onClick={() => {
+                setActiveTab(item.key);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`relative py-1.5 px-5 rounded-[2rem] border border-black/10 dark:border-white/10 hover:border-[#0071ec]/60 transition-all duration-300 text-xs font-mono tracking-widest ${
+                activeTab === item.key
+                  ? 'bg-[#0071ec]/10 text-[#0071ec] font-semibold border-[#0071ec]/30'
+                  : 'bg-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
+              }`}
+              id={`nav-tab-${item.key}`}
             >
               {t(item.labelKey)}
-              {activeTab === item.key && (
-                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-blue-500" />
-              )}
             </button>
           ))}
         </nav>

@@ -83,7 +83,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg-gray-100 dark:bg-[#111] min-h-screen relative overflow-hidden transition-colors duration-500" dir={isRTL ? 'rtl' : 'ltr'} style={{ perspective: '2000px' }}>
+    <div className="bg-gray-100 dark:bg-[#111] min-h-screen relative overflow-x-hidden transition-colors duration-500" dir={isRTL ? 'rtl' : 'ltr'}>
       
       {/* 
         The Curved Half-Circle Menu
@@ -104,7 +104,7 @@ export default function App() {
           boxShadow: isRTL ? '-50px 0 100px rgba(0,0,0,0.9)' : '50px 0 100px rgba(0,0,0,0.9)'
         }}
       >
-         <div className="flex flex-col gap-10 text-center w-full relative z-10 px-8">
+         <div className="flex flex-col gap-6 sm:gap-10 items-start sm:items-center text-left sm:text-center w-full relative z-10 px-8 sm:px-8">
             {['HOME', 'WORK', 'CONTACT'].map((tab, i) => (
               <motion.button
                 key={tab}
@@ -112,7 +112,7 @@ export default function App() {
                 initial={{ opacity: 0, x: isRTL ? 50 : -50, scale: 0.8 }}
                 animate={isMenuOpen ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: isRTL ? 50 : -50, scale: 0.8 }}
                 transition={{ delay: isMenuOpen ? 0.3 + (i * 0.1) : 0, duration: 0.5, type: 'spring', bounce: 0.4 }}
-                className={`font-hanken text-2xl sm:text-4xl font-black uppercase tracking-tighter transition-all duration-300 hover:scale-110 origin-center ${activeTab === tab ? 'text-[#0071ec]' : 'text-zinc-500 hover:text-black dark:hover:text-white'}`}
+                className={`font-hanken text-lg sm:text-3xl md:text-4xl font-black uppercase tracking-tighter transition-all duration-300 hover:scale-110 origin-left sm:origin-center ${activeTab === tab ? 'text-[#0071ec]' : 'text-zinc-500 hover:text-black dark:hover:text-white'}`}
               >
                 {t(`nav.${tab.toLowerCase()}`)}
               </motion.button>
@@ -121,29 +121,9 @@ export default function App() {
       </motion.nav>
 
       {/* 
-        Main App Wrapper
-        This holds the entire original app, applying 3D transforms when menu is open.
+        Fixed Top Bar - Kept outside motion.div to prevent fixed positioning breakage 
       */}
-      <motion.div 
-        variants={appWrapperVariants}
-        initial="closed"
-        animate={isMenuOpen ? "open" : "closed"}
-        className="min-h-screen bg-white text-black dark:bg-black dark:text-[#e5e2e1] antialiased flex flex-col font-sans relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.2)] dark:shadow-[0_0_100px_rgba(0,0,0,1)] origin-center transition-colors duration-500"
-        style={{ 
-          transformOrigin: isRTL ? 'right center' : 'left center',
-          height: isMenuOpen ? '100vh' : 'auto',
-          overflow: isMenuOpen ? 'hidden' : 'visible'
-        }}
-      >
-        {/* Overlay to catch clicks and close menu when clicking main body */}
-        {isMenuOpen && (
-          <div 
-            className="absolute inset-0 z-[60] bg-white/20 dark:bg-black/20 backdrop-blur-[2px] cursor-pointer" 
-            onClick={() => setIsMenuOpen(false)} 
-          />
-        )}
-
-        {/* Universal Top Bar */}
+      <div className={`transition-opacity duration-300 relative z-50 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <Header 
           activeTab={activeTab} 
           setActiveTab={handleTabChange} 
@@ -152,6 +132,31 @@ export default function App() {
           logoIndex={logoIndex}
           rotation={rotation}
         />
+      </div>
+
+      {/* 
+        Main App Wrapper
+        This holds the entire original app, applying 3D transforms when menu is open.
+      */}
+      <div style={{ perspective: '2000px' }} className="pointer-events-none">
+        <motion.div 
+          variants={appWrapperVariants}
+          initial="closed"
+          animate={isMenuOpen ? "open" : "closed"}
+          className="min-h-screen bg-white text-black dark:bg-black dark:text-[#e5e2e1] antialiased flex flex-col font-sans relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.2)] dark:shadow-[0_0_100px_rgba(0,0,0,1)] origin-center transition-colors duration-500 pointer-events-auto"
+          style={{ 
+            transformOrigin: isRTL ? 'right center' : 'left center',
+            height: isMenuOpen ? '100vh' : 'auto',
+            overflow: isMenuOpen ? 'hidden' : 'visible'
+          }}
+        >
+        {/* Overlay to catch clicks and close menu when clicking main body */}
+        {isMenuOpen && (
+          <div 
+            className="absolute inset-0 z-[60] bg-white/20 dark:bg-black/20 backdrop-blur-[2px] cursor-pointer" 
+            onClick={() => setIsMenuOpen(false)} 
+          />
+        )}
 
         {/* Primary Context Container */}
         <main className="flex-grow pt-16 pb-8" id="primary-main-viewport" style={{ perspective: '1500px' }}>
@@ -233,8 +238,12 @@ export default function App() {
         {/* Universal Footer */}
         <Footer setActiveTab={handleTabChange} logoIndex={logoIndex} rotation={rotation} />
 
-        {/* Bottom Nav Bar (Mobile Only Viewport) */}
-        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-black/10 dark:border-white/10 flex justify-around items-center h-20 pb-safe z-40 transition-colors duration-500" id="mobile-bottom-navbar">
+        </motion.div>
+      </div>
+      
+      {/* Bottom Nav Bar (Mobile Only Viewport) - Kept outside motion.div */}
+      <div className={`transition-opacity duration-300 relative z-50 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-black/10 dark:border-white/10 flex justify-around items-center h-20 pb-safe transition-colors duration-500" id="mobile-bottom-navbar">
           <button 
             onClick={() => handleTabChange('HOME')}
             className={`flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all ${
@@ -265,8 +274,7 @@ export default function App() {
             <span className="font-mono text-[8px] tracking-widest font-semibold">{t('nav.contact')}</span>
           </button>
         </nav>
-
-      </motion.div>
+      </div>
       
     </div>
   );
