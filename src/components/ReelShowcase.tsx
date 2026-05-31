@@ -106,12 +106,12 @@ export default function ReelShowcase() {
   };
 
   return (
-    <section className="bg-black text-[#e5e2e1] py-16 px-4 md:px-12 overflow-hidden" id="reel-showcase-section">
+    <section className="bg-white text-black dark:bg-black dark:text-[#e5e2e1] py-16 px-4 md:px-12 overflow-hidden transition-colors duration-500" id="reel-showcase-section">
       <div className="max-w-7xl mx-auto space-y-12 relative z-10">
 
         {/* Header */}
         <div className="text-center space-y-4">
-          <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-white tracking-tight uppercase">
+          <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase">
             {t('reel.title')}
           </h2>
           <p className="font-sans text-sm text-zinc-500 max-w-lg mx-auto">
@@ -125,7 +125,7 @@ export default function ReelShowcase() {
             onClick={() => { setActiveCategory('all'); setCarouselIndex(0); setIsPlaying(true); }}
             className={`px-6 py-2.5 rounded-full font-mono text-xs uppercase font-bold transition-all duration-300 border ${activeCategory === 'all'
               ? 'bg-[#0071ec]/10 border-[#0071ec] text-[#0071ec] shadow-[0_0_15px_rgba(0,113,236,0.3)]'
-              : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-[#0071ec]/50 hover:text-[#0071ec]'
+              : 'bg-black/5 dark:bg-[#1A1A1A] border-black/10 dark:border-white/10 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:border-[#0071ec]/50 hover:border-[#0071ec]/50 dark:hover:text-[#0071ec]'
               }`}
           >
             {t('reel_categories.all', 'ALL')}
@@ -134,34 +134,31 @@ export default function ReelShowcase() {
             const isActive = activeCategory === cat.id;
             let themeClass = '';
 
+            const defaultInactive = 'bg-black/5 dark:bg-[#1A1A1A] border-black/10 dark:border-white/10 text-zinc-500 dark:text-zinc-400';
             if (cat.id === 'ugc') {
               themeClass = isActive
-                ? 'bg-purple-500/10 border-purple-500 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-purple-500/50 hover:text-purple-400';
+                ? 'bg-purple-500/10 border-purple-500 text-purple-600 dark:text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                : `${defaultInactive} hover:border-purple-500/50 hover:text-purple-600 dark:hover:text-purple-400`;
             } else if (cat.id === 'dentist') {
               themeClass = isActive
-                ? 'bg-blue-500/10 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-blue-500/50 hover:text-blue-400';
+                ? 'bg-blue-500/10 border-blue-500 text-blue-600 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                : `${defaultInactive} hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400`;
             } else if (cat.id === 'esthetique') {
               themeClass = isActive
-                ? 'bg-rose-500/10 border-rose-500 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-rose-500/50 hover:text-rose-400';
+                ? 'bg-rose-500/10 border-rose-500 text-rose-600 dark:text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
+                : `${defaultInactive} hover:border-rose-500/50 hover:text-rose-600 dark:hover:text-rose-400`;
             } else if (cat.id === 'pharmacie') {
               themeClass = isActive
-                ? 'bg-green-500/10 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-green-500/50 hover:text-green-400';
+                ? 'bg-green-500/10 border-green-500 text-green-600 dark:text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                : `${defaultInactive} hover:border-green-500/50 hover:text-green-600 dark:hover:text-green-400`;
             } else if (cat.id === 'evenement') {
               themeClass = isActive
-                ? 'bg-fuchsia-500/10 border-fuchsia-500 text-fuchsia-400 shadow-[0_0_15px_rgba(217,70,239,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-fuchsia-500/50 hover:text-fuchsia-400';
-            } else if (cat.id === 'other') {
+                ? 'bg-fuchsia-500/10 border-fuchsia-500 text-fuchsia-600 dark:text-fuchsia-400 shadow-[0_0_15px_rgba(217,70,239,0.3)]'
+                : `${defaultInactive} hover:border-fuchsia-500/50 hover:text-fuchsia-600 dark:hover:text-fuchsia-400`;
+            } else {
               themeClass = isActive
-                ? 'bg-rose-500/10 border-rose-500 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-rose-500/50 hover:text-rose-400';
-            } else if (cat.id === 'other') {
-              themeClass = isActive
-                ? 'bg-rose-500/10 border-rose-500 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                : 'bg-[#1A1A1A] border-white/10 text-zinc-400 hover:border-rose-500/50 hover:text-rose-400';
+                ? 'bg-rose-500/10 border-rose-500 text-rose-600 dark:text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
+                : `${defaultInactive} hover:border-rose-500/50 hover:text-rose-600 dark:hover:text-rose-400`;
             }
 
             return (
@@ -190,7 +187,7 @@ export default function ReelShowcase() {
               setCarouselIndex((prev) => (prev - 1 + filteredReels.length) % filteredReels.length);
               setIsPlaying(true);
             }}
-            className="absolute left-2 sm:left-4 z-30 p-2 sm:p-3 rounded-full bg-black/40 sm:bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors backdrop-blur-md"
+            className="absolute left-2 sm:left-4 z-30 p-2 sm:p-3 rounded-full bg-black/40 sm:bg-black/40 dark:bg-black/40 sm:dark:bg-white/5 border border-black/10 dark:border-white/10 text-white hover:bg-black/60 dark:hover:bg-white/10 transition-colors backdrop-blur-md"
           >
             <ChevronLeft size={24} className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -200,7 +197,7 @@ export default function ReelShowcase() {
               setCarouselIndex((prev) => (prev + 1) % filteredReels.length);
               setIsPlaying(true);
             }}
-            className="absolute right-2 sm:right-4 z-30 p-2 sm:p-3 rounded-full bg-black/40 sm:bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors backdrop-blur-md"
+            className="absolute right-2 sm:right-4 z-30 p-2 sm:p-3 rounded-full bg-black/40 sm:bg-black/40 dark:bg-black/40 sm:dark:bg-white/5 border border-black/10 dark:border-white/10 text-white hover:bg-black/60 dark:hover:bg-white/10 transition-colors backdrop-blur-md"
           >
             <ChevronRight size={24} className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>

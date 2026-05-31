@@ -16,7 +16,7 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
 
   return (
     <section
-      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-white/5 bg-black"
+      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-black/5 dark:border-white/5 bg-white dark:bg-black transition-colors duration-500"
       id="hero-section"
     >
       {/* Dynamic Ambient Blur Core background */}
@@ -35,7 +35,7 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-[#0071ec] rounded-full shadow-[0_0_10px_#0071ec]"></div>
           </div>
           {/* Middle pulsing ring */}
-          <div className="absolute w-36 h-36 sm:w-52 sm:h-52 rounded-full border border-white/10 animate-[pulse_3s_ease-in-out_infinite]"></div>
+          <div className="absolute w-36 h-36 sm:w-52 sm:h-52 rounded-full border border-black/10 dark:border-white/10 animate-[pulse_3s_ease-in-out_infinite]"></div>
           {/* Logo image */}
           <div 
             className="z-10 transition-transform duration-700 ease-in-out [perspective:1000px]"
@@ -52,7 +52,7 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
         {/* Brand Name */}
         <div className="space-y-2 mt-8 [perspective:1000px]">
           <h1 
-            className="font-hanken text-4xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight uppercase leading-none transition-transform duration-700 ease-in-out"
+            className="font-hanken text-4xl sm:text-6xl md:text-7xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none transition-transform duration-700 ease-in-out"
             style={{ transform: `rotateX(${rotation}deg)` }}
           >
             {brandNames[logoIndex]}

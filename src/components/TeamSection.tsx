@@ -48,7 +48,7 @@ export default function TeamSection() {
   };
 
   return (
-    <section className="bg-black text-[#e5e2e1] pt-24 pb-8 px-4 sm:px-6 md:px-16 overflow-hidden relative" id="team-section">
+    <section className="bg-white text-black dark:bg-black dark:text-[#e5e2e1] pt-24 pb-8 px-4 sm:px-6 md:px-16 overflow-hidden relative transition-colors duration-500" id="team-section">
       <div className="max-w-[90rem] mx-auto">
 
         {/* Team Area */}
@@ -75,14 +75,14 @@ export default function TeamSection() {
             
             <motion.h2 
               variants={{ hidden: { opacity: 0, scale: 0.9, y: 20 }, visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 100 } } }}
-              className="font-hanken text-4xl sm:text-6xl font-extrabold text-white uppercase tracking-tight"
+              className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white uppercase tracking-tight"
             >
               {t('team.title')}
             </motion.h2>
 
             <motion.p 
               variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-              className="font-sans text-sm sm:text-base text-zinc-400 font-light"
+              className="font-sans text-sm sm:text-base text-zinc-500 dark:text-zinc-400 font-light"
             >
               {t('team.description')}
             </motion.p>
@@ -94,14 +94,14 @@ export default function TeamSection() {
             {/* Nav Buttons */}
             <button 
               onClick={isRTL ? scrollRight : scrollLeft}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/50 border border-white/10 text-white hover:bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block ml-2"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/50 dark:bg-black/50 border border-black/10 dark:border-white/10 text-black dark:text-white hover:bg-white/80 dark:hover:bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block ml-2"
             >
               <ChevronLeft size={24} className={isRTL ? "rotate-180" : ""} />
             </button>
 
             <button 
               onClick={isRTL ? scrollLeft : scrollRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/50 border border-white/10 text-white hover:bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block mr-2"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/50 dark:bg-black/50 border border-black/10 dark:border-white/10 text-black dark:text-white hover:bg-white/80 dark:hover:bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block mr-2"
             >
               <ChevronRight size={24} className={isRTL ? "rotate-180" : ""} />
             </button>
@@ -118,7 +118,7 @@ export default function TeamSection() {
                   viewport={{ once: true, margin: "0px" }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   key={member.id}
-                  className="snap-start shrink-0 w-[30vw] sm:w-[calc(33.333%-1.33rem)] relative bg-[#1A1A1A] border border-white/10 hover:border-[#0071ec] transition-all duration-500 rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/5] flex flex-col justify-end shadow-xl cursor-grab active:cursor-grabbing"
+                  className="snap-start shrink-0 w-[30vw] sm:w-[calc(33.333%-1.33rem)] relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] transition-all duration-500 rounded-xl sm:rounded-2xl overflow-hidden aspect-[4/5] flex flex-col justify-end shadow-xl cursor-grab active:cursor-grabbing"
                   id={`team-card-${member.id}`}
                   whileHover={{ y: -10 }}
                 >
@@ -145,8 +145,8 @@ export default function TeamSection() {
             </div>
 
             {/* Gradient Edges to indicate scroll */}
-            <div className="absolute top-0 bottom-0 left-0 w-12 sm:w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10"></div>
-            <div className="absolute top-0 bottom-0 right-0 w-12 sm:w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10"></div>
+            <div className="absolute top-0 bottom-0 left-0 w-12 sm:w-24 bg-gradient-to-r from-white dark:from-black to-transparent pointer-events-none z-10 transition-colors duration-500"></div>
+            <div className="absolute top-0 bottom-0 right-0 w-12 sm:w-24 bg-gradient-to-l from-white dark:from-black to-transparent pointer-events-none z-10 transition-colors duration-500"></div>
 
           </div>
         </div>

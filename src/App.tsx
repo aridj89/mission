@@ -83,7 +83,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg-[#111] min-h-screen relative overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'} style={{ perspective: '2000px' }}>
+    <div className="bg-gray-100 dark:bg-[#111] min-h-screen relative overflow-hidden transition-colors duration-500" dir={isRTL ? 'rtl' : 'ltr'} style={{ perspective: '2000px' }}>
       
       {/* 
         The Curved Half-Circle Menu
@@ -93,7 +93,7 @@ export default function App() {
         variants={menuVariants}
         initial="closed"
         animate={isMenuOpen ? "open" : "closed"}
-        className={`fixed top-0 bottom-0 ${isRTL ? 'right-0' : 'left-0'} w-[80vw] sm:w-[50vw] md:w-[40vw] bg-[#0A0A0A] border-y border-white/5 flex flex-col justify-center items-center z-0`}
+        className={`fixed top-0 bottom-0 ${isRTL ? 'right-0' : 'left-0'} w-[80vw] sm:w-[50vw] md:w-[40vw] bg-white dark:bg-[#0A0A0A] border-y border-black/5 dark:border-white/5 flex flex-col justify-center items-center z-0 transition-colors duration-500`}
         style={{
           borderTopRightRadius: isRTL ? '0' : '100% 50%',
           borderBottomRightRadius: isRTL ? '0' : '100% 50%',
@@ -112,7 +112,7 @@ export default function App() {
                 initial={{ opacity: 0, x: isRTL ? 50 : -50, scale: 0.8 }}
                 animate={isMenuOpen ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: isRTL ? 50 : -50, scale: 0.8 }}
                 transition={{ delay: isMenuOpen ? 0.3 + (i * 0.1) : 0, duration: 0.5, type: 'spring', bounce: 0.4 }}
-                className={`font-hanken text-2xl sm:text-4xl font-black uppercase tracking-tighter transition-all duration-300 hover:scale-110 origin-center ${activeTab === tab ? 'text-[#0071ec]' : 'text-zinc-500 hover:text-white'}`}
+                className={`font-hanken text-2xl sm:text-4xl font-black uppercase tracking-tighter transition-all duration-300 hover:scale-110 origin-center ${activeTab === tab ? 'text-[#0071ec]' : 'text-zinc-500 hover:text-black dark:hover:text-white'}`}
               >
                 {t(`nav.${tab.toLowerCase()}`)}
               </motion.button>
@@ -128,7 +128,7 @@ export default function App() {
         variants={appWrapperVariants}
         initial="closed"
         animate={isMenuOpen ? "open" : "closed"}
-        className="min-h-screen bg-black text-[#e5e2e1] antialiased flex flex-col font-sans relative z-10 shadow-[0_0_100px_rgba(0,0,0,1)] origin-center"
+        className="min-h-screen bg-white text-black dark:bg-black dark:text-[#e5e2e1] antialiased flex flex-col font-sans relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.2)] dark:shadow-[0_0_100px_rgba(0,0,0,1)] origin-center transition-colors duration-500"
         style={{ 
           transformOrigin: isRTL ? 'right center' : 'left center',
           height: isMenuOpen ? '100vh' : 'auto',
@@ -138,7 +138,7 @@ export default function App() {
         {/* Overlay to catch clicks and close menu when clicking main body */}
         {isMenuOpen && (
           <div 
-            className="absolute inset-0 z-[60] bg-black/20 backdrop-blur-[2px] cursor-pointer" 
+            className="absolute inset-0 z-[60] bg-white/20 dark:bg-black/20 backdrop-blur-[2px] cursor-pointer" 
             onClick={() => setIsMenuOpen(false)} 
           />
         )}
@@ -180,9 +180,9 @@ export default function App() {
                 <ReelShowcase />
 
                 {/* In-view Core CTA Banner */}
-                <section className="py-24 px-6 md:px-16 text-center border-t border-white/5 bg-black">
+                <section className="py-24 px-6 md:px-16 text-center border-t border-black/5 dark:border-white/5 bg-white dark:bg-black transition-colors duration-500">
                   <div className="max-w-4xl mx-auto space-y-8">
-                    <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-white tracking-tight uppercase leading-none">
+                    <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none">
                       {t('cta.title')}
                     </h2>
                     <div className="flex justify-center pt-2">
@@ -234,11 +234,11 @@ export default function App() {
         <Footer setActiveTab={handleTabChange} logoIndex={logoIndex} rotation={rotation} />
 
         {/* Bottom Nav Bar (Mobile Only Viewport) */}
-        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-black/90 backdrop-blur-xl border-t border-white/10 flex justify-around items-center h-20 pb-safe z-40" id="mobile-bottom-navbar">
+        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/90 dark:bg-black/90 backdrop-blur-xl border-t border-black/10 dark:border-white/10 flex justify-around items-center h-20 pb-safe z-40 transition-colors duration-500" id="mobile-bottom-navbar">
           <button 
             onClick={() => handleTabChange('HOME')}
             className={`flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all ${
-              activeTab === 'HOME' ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
+              activeTab === 'HOME' ? 'text-black dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
             }`}
           >
             <Home size={18} />
@@ -248,7 +248,7 @@ export default function App() {
           <button 
             onClick={() => handleTabChange('WORK')}
             className={`flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all ${
-              activeTab === 'WORK' ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
+              activeTab === 'WORK' ? 'text-black dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
             }`}
           >
             <Grid size={18} />
@@ -258,7 +258,7 @@ export default function App() {
           <button 
             onClick={() => handleTabChange('CONTACT')}
             className={`flex flex-col items-center justify-center gap-1 w-20 py-1 transition-all ${
-              activeTab === 'CONTACT' ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'
+              activeTab === 'CONTACT' ? 'text-black dark:text-white' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
             }`}
           >
             <Mail size={18} />
