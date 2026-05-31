@@ -71,15 +71,23 @@ export default function Header({ activeTab, setActiveTab, isMenuOpen, setIsMenuO
             className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             id="logo-button"
           >
-            <div className="transition-transform duration-700 ease-in-out [perspective:1000px]" style={{ transform: `rotateY(${rotation}deg)` }}>
-              <img src={logos[logoIndex]} alt="Mission Verse" className="w-8 h-8 rounded-sm object-cover transition-opacity duration-300" />
+            <div 
+              className="relative w-8 h-8 transition-transform duration-700 ease-in-out [transform-style:preserve-3d]" 
+              style={{ transform: `rotateY(${rotation}deg)` }}
+            >
+              <img src={logos[1]} alt={brandNames[1]} className="absolute inset-0 w-8 h-8 rounded-sm object-cover [backface-visibility:hidden]" />
+              <img src={logos[0]} alt={brandNames[0]} className="absolute inset-0 w-8 h-8 rounded-sm object-cover [backface-visibility:hidden] [transform:rotateY(180deg)]" />
             </div>
-            <div className="[perspective:1000px]">
-              <span 
-                className="font-hanken font-extrabold tracking-tighter text-lg md:text-xl text-black dark:text-white uppercase transition-transform duration-700 ease-in-out block"
-                style={{ transform: `rotateX(${rotation}deg)` }}
-              >
-                {brandNames[logoIndex]}
+            
+            <div 
+              className="grid transition-transform duration-700 ease-in-out [transform-style:preserve-3d] items-center text-left"
+              style={{ transform: `rotateX(${rotation}deg)` }}
+            >
+              <span className="col-start-1 row-start-1 font-hanken font-extrabold tracking-tighter text-lg md:text-xl text-black dark:text-white uppercase [backface-visibility:hidden] whitespace-nowrap">
+                {brandNames[1]}
+              </span>
+              <span className="col-start-1 row-start-1 font-hanken font-extrabold tracking-tighter text-lg md:text-xl text-black dark:text-white uppercase [backface-visibility:hidden] [transform:rotateX(180deg)] whitespace-nowrap">
+                {brandNames[0]}
               </span>
             </div>
           </button>

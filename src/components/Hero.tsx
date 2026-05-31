@@ -38,25 +38,35 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
           <div className="absolute w-36 h-36 sm:w-52 sm:h-52 rounded-full border border-black/10 dark:border-white/10 animate-[pulse_3s_ease-in-out_infinite]"></div>
           {/* Logo image */}
           <div 
-            className="z-10 transition-transform duration-700 ease-in-out [perspective:1000px]"
+            className="relative z-10 w-24 h-24 sm:w-36 sm:h-36 transition-transform duration-700 ease-in-out [transform-style:preserve-3d]"
             style={{ transform: `rotateY(${rotation}deg)` }}
           >
             <img
-              src={logos[logoIndex]}
-              alt="Mission Verse Media Logo"
-              className="w-24 h-24 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-[#0071ec]/60 shadow-[0_0_40px_rgba(0,113,236,0.5)]"
+              src={logos[1]}
+              alt={brandNames[1]}
+              className="absolute inset-0 w-24 h-24 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-[#0071ec]/60 shadow-[0_0_40px_rgba(0,113,236,0.5)] [backface-visibility:hidden]"
+            />
+            <img
+              src={logos[0]}
+              alt={brandNames[0]}
+              className="absolute inset-0 w-24 h-24 sm:w-36 sm:h-36 rounded-full object-cover border-2 border-[#0071ec]/60 shadow-[0_0_40px_rgba(0,113,236,0.5)] [backface-visibility:hidden] [transform:rotateY(180deg)]"
             />
           </div>
         </div>
 
         {/* Brand Name */}
-        <div className="space-y-2 mt-8 [perspective:1000px]">
-          <h1 
-            className="font-hanken text-4xl sm:text-6xl md:text-7xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none transition-transform duration-700 ease-in-out"
+        <div className="space-y-2 mt-8">
+          <div 
+            className="grid transition-transform duration-700 ease-in-out [transform-style:preserve-3d] place-items-center"
             style={{ transform: `rotateX(${rotation}deg)` }}
           >
-            {brandNames[logoIndex]}
-          </h1>
+            <h1 className="col-start-1 row-start-1 font-hanken text-4xl sm:text-6xl md:text-7xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none [backface-visibility:hidden] whitespace-nowrap">
+              {brandNames[1]}
+            </h1>
+            <h1 className="col-start-1 row-start-1 font-hanken text-4xl sm:text-6xl md:text-7xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none [backface-visibility:hidden] [transform:rotateX(180deg)] whitespace-nowrap">
+              {brandNames[0]}
+            </h1>
+          </div>
           <p className="font-mono text-base sm:text-xl text-[#0071ec] tracking-[0.3em] uppercase font-semibold">
             MEDIA
           </p>

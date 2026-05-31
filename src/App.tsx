@@ -217,7 +217,7 @@ export default function App() {
                 className="origin-center min-h-[80vh]" 
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                <TeamSection isGlobalFlipped={isGlobalFlipped} />
+                <TeamSection isGlobalFlipped={isGlobalFlipped} rotation={rotation} />
               </motion.div>
             )}
 

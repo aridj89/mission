@@ -21,15 +21,23 @@ export default function Footer({ setActiveTab, logoIndex, rotation }: FooterProp
         
         {/* Logo and Headline */}
         <div className="space-y-4 flex flex-col items-center">
-          <div className="transition-transform duration-700 ease-in-out [perspective:1000px]" style={{ transform: `rotateY(${rotation}deg)` }}>
-            <img src={logos[logoIndex]} alt="Mission Verse" className="w-16 h-16 rounded-md object-cover transition-opacity duration-300" />
+          <div 
+            className="relative w-16 h-16 transition-transform duration-700 ease-in-out [transform-style:preserve-3d]" 
+            style={{ transform: `rotateY(${rotation}deg)` }}
+          >
+            <img src={logos[1]} alt={brandNames[1]} className="absolute inset-0 w-16 h-16 rounded-md object-cover [backface-visibility:hidden]" />
+            <img src={logos[0]} alt={brandNames[0]} className="absolute inset-0 w-16 h-16 rounded-md object-cover [backface-visibility:hidden] [transform:rotateY(180deg)]" />
           </div>
-          <div className="[perspective:1000px]">
-            <span 
-              className="font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black dark:text-white block uppercase transition-transform duration-700 ease-in-out"
-              style={{ transform: `rotateX(${rotation}deg)` }}
-            >
-              {brandNames[logoIndex]}
+          
+          <div 
+            className="grid transition-transform duration-700 ease-in-out [transform-style:preserve-3d] place-items-center"
+            style={{ transform: `rotateX(${rotation}deg)` }}
+          >
+            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black dark:text-white uppercase [backface-visibility:hidden] whitespace-nowrap">
+              {brandNames[1]}
+            </span>
+            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black dark:text-white uppercase [backface-visibility:hidden] [transform:rotateX(180deg)] whitespace-nowrap">
+              {brandNames[0]}
             </span>
           </div>
           <p className="text-zinc-500 font-mono text-xs tracking-wider uppercase">
