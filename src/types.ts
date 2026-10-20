@@ -10,7 +10,7 @@ export interface TeamMember {
 
 export interface Reel {
   id: string;
-  category: string;
+  category?: string;
   title: string;
   videoUrl: string;
 }
@@ -27,4 +27,4 @@ export interface BentoProject {
   link?: string;
 }
 
-export type ActiveTab = 'HOME' | 'WORK' | 'CONTACT';
+export type ActiveTab = 'HOME';

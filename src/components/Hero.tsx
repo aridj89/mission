@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowDown } from 'lucide-react';
 
 interface HeroProps {
-  onViewPortfolio: () => void;
-  logoIndex: number;
+  onViewPortfolio?: () => void;
+  logoIndex?: number;
   rotation: number;
 }
 
-export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps) {
+export default function Hero({ rotation }: HeroProps) {
   const { t } = useTranslation();
 
   const logos = ['/logo.jpg', '/Ve.png'];
-  const brandNames = ['MISSION VERSE', 'VEXA'];
+  const brandNames = ['ORVA', 'VEXA'];
 
   return (
     <section
-      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-black/5 dark:border-white/5 bg-white dark:bg-black transition-colors duration-500"
+      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#050d24] transition-colors duration-500"
       id="hero-section"
     >
       {/* Dynamic Ambient Blur Core background */}
@@ -70,17 +69,6 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
           <p className="font-mono text-base sm:text-xl text-[#0071ec] tracking-[0.3em] uppercase font-semibold">
             MEDIA
           </p>
-        </div>
-
-        {/* CTA Button */}
-        <div className="flex flex-wrap justify-center gap-4 pt-2">
-          <button
-            onClick={onViewPortfolio}
-            className="btn font-mono text-xs tracking-widest text-center"
-            id="view-portfolio-hero-btn"
-          >
-            {t('hero.view_portfolio')}
-          </button>
         </div>
       </div>
 

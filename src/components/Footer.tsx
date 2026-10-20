@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActiveTab } from '../types';
 
 interface FooterProps {
-  setActiveTab: (tab: ActiveTab) => void;
-  logoIndex: number;
+  logoIndex?: number;
   rotation: number;
 }
 
-export default function Footer({ setActiveTab, logoIndex, rotation }: FooterProps) {
+export default function Footer({ rotation }: FooterProps) {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   const logos = ['/logo.jpg', '/Ve.png'];
-  const brandNames = ['MISSION VERSE', 'VEXA'];
+  const brandNames = ['ORVA', 'VEXA'];
 
   return (
-    <footer className="bg-white dark:bg-[#0e0e0e] border-t border-black/10 dark:border-white/10 w-full transition-colors duration-500" id="global-footer">
+    <footer className="bg-white dark:bg-[#050d24] border-t border-black/10 dark:border-white/10 w-full transition-colors duration-500" id="global-footer">
       <div className="flex flex-col items-center gap-8 pt-10 pb-8 px-6 text-center max-w-7xl mx-auto">
         
         {/* Logo and Headline */}
@@ -48,26 +46,28 @@ export default function Footer({ setActiveTab, logoIndex, rotation }: FooterProp
         {/* Footer Navigation Link Lists */}
         <div className="flex flex-wrap justify-center gap-8 md:gap-12 my-4">
           <button 
-            onClick={() => { setActiveTab('HOME'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200"
-            id="footer-nav-strategy"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200 uppercase"
+            id="footer-nav-home"
           >
-            {t('footer.strategy')}
+            {t('nav.home', 'HOME')}
           </button>
           <button 
-            onClick={() => { setActiveTab('WORK'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200"
-            id="footer-nav-production"
+            onClick={() => document.getElementById('reel-showcase-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200 uppercase"
+            id="footer-nav-portfolio"
           >
-            {t('footer.production')}
+            PORTFOLIO
           </button>
-          <button 
-            onClick={() => { setActiveTab('CONTACT'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200"
-            id="footer-nav-connect"
+          <a 
+            href="https://wa.me/213540893911" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200 uppercase"
+            id="footer-nav-whatsapp"
           >
-            {t('footer.connect')}
-          </button>
+            WHATSAPP
+          </a>
         </div>
 
         {/* Tactical disclaimer */}

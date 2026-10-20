@@ -13,6 +13,12 @@ html {
   font-size: 14.5px; /* Scales down the entire site slightly */
 }
 
+html.dark,
+body.dark,
+.dark {
+  background-color: #050d24;
+}
+
 /* Custom layout and mask utility classes */
 .mask-image-radial {
   mask-image: radial-gradient(circle, black 0%, transparent 100%);
@@ -29,10 +35,10 @@ html {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e0e0e;
+  background: #050d24;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: #182c5b;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
