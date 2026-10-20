@@ -79,11 +79,11 @@ export default function ReelShowcase() {
       const card = document.createElement('div');
       card.style.cssText = `
         position:absolute;
-        width:clamp(210px, 58vw, 250px);
+        width:min(34vw,240px);
         aspect-ratio:9/16;
-        left:calc(clamp(210px, 58vw, 250px)/-2);
-        top:calc(clamp(210px, 58vw, 250px)*-0.888);
-        border-radius:18px;
+        left:calc(min(34vw,240px)/-2);
+        top:calc(min(34vw,240px)*-0.89);
+        border-radius:16px;
         overflow:hidden;
         background:#000;
         box-shadow:0 20px 60px rgba(0,0,0,0.5);
@@ -178,10 +178,7 @@ export default function ReelShowcase() {
 
       // Combine auto-rotation + user scroll control
       const angle = autoAngleRef.current + curRef.current * 360 * SPIN;
-      const isMobile = window.innerWidth < 768;
-      const r = isMobile
-        ? Math.max(260, window.innerWidth * 0.7)
-        : Math.min(RADIUS, window.innerWidth * 0.55);
+      const r = Math.min(RADIUS, window.innerWidth * 0.55);
 
       let maxDepth = -1;
       let frontIdx = 0;
@@ -191,18 +188,11 @@ export default function ReelShowcase() {
         const depth = (Math.cos((a * Math.PI) / 180) + 1) / 2;
 
         // Blur for cards in the back
-        const blurAmount = depth < 0.5 ? ((0.5 - depth) * (isMobile ? 12 : 10)).toFixed(1) : '0';
+        const blurAmount = depth < 0.5 ? ((0.5 - depth) * 10).toFixed(1) : '0';
 
-        // Adaptive scale & opacity: front card is prominent, side/back cards fade smoothly
-        const scale = isMobile
-          ? (0.72 + 0.28 * Math.pow(depth, 1.3)).toFixed(3)
-          : (0.82 + 0.18 * depth).toFixed(3);
-        const opacity = isMobile
-          ? (0.2 + 0.8 * Math.pow(depth, 1.5)).toFixed(3)
-          : (0.35 + 0.65 * depth).toFixed(3);
-
-        card.style.transform = `rotateY(${a}deg) translateZ(${r}px) scale(${scale})`;
-        card.style.opacity = opacity;
+        // Exact same horizontal level for all cards (no vertical wave, no tilt)
+        card.style.transform = `rotateY(${a}deg) translateZ(${r}px) scale(${(0.82 + 0.18 * depth).toFixed(3)})`;
+        card.style.opacity = (0.35 + 0.65 * depth).toFixed(3);
         card.style.zIndex = String(Math.round(depth * 100));
         card.style.filter = `blur(${blurAmount}px)`;
 
@@ -281,17 +271,17 @@ export default function ReelShowcase() {
             style={{
               position: 'absolute',
               inset: 0,
-              perspective: 'clamp(850px, 120vw, 1400px)',
+              perspective: '1400px',
               background: 'radial-gradient(ellipse at 50% 40%, #dce8ff 0%, #ffffff 70%)',
             }}
             className="dark:[background:radial-gradient(ellipse_at_50%_40%,#10244f_0%,#050d24_70%)]"
           >
             {/* Section title */}
-            <div className="absolute top-4 sm:top-8 left-0 right-0 text-center z-10 pointer-events-none px-4">
-              <h2 className="font-hanken text-2xl sm:text-5xl md:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase">
+            <div className="absolute top-8 left-0 right-0 text-center z-10 pointer-events-none">
+              <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase">
                 {t('reel.title')}
               </h2>
-              <p className="font-mono text-[10px] sm:text-xs text-zinc-500 mt-1 sm:mt-2 tracking-widest uppercase">
+              <p className="font-mono text-xs text-zinc-500 mt-2 tracking-widest uppercase">
                 {t('reel.scroll_hint', 'Scroll to explore')}
               </p>
             </div>
@@ -311,10 +301,10 @@ export default function ReelShowcase() {
             />
 
             {/* Scroll indicator */}
-            <div className="absolute bottom-3 sm:bottom-8 left-0 right-0 flex justify-center z-10 pointer-events-none">
-              <div className="flex flex-col items-center gap-1 sm:gap-2 animate-bounce opacity-40">
-                <div className="w-px h-6 sm:h-12 bg-current" />
-                <span className="font-mono text-[9px] sm:text-[10px] tracking-widest uppercase text-zinc-500">scroll</span>
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center z-10 pointer-events-none">
+              <div className="flex flex-col items-center gap-2 animate-bounce opacity-40">
+                <div className="w-px h-12 bg-current" />
+                <span className="font-mono text-[10px] tracking-widest uppercase text-zinc-500">scroll</span>
               </div>
             </div>
           </div>
