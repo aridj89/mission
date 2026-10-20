@@ -259,12 +259,12 @@ export default function ReelShowcase() {
         ref={trackRef}
         id="reel-showcase-section"
         style={{ height: '600vh', position: 'relative' }}
-        className="bg-white dark:bg-[#050d24] transition-colors duration-500"
+        className="bg-white"
       >
         <div
           ref={sectionRef}
           style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}
-          className="bg-white dark:bg-[#050d24] transition-colors duration-500"
+          className="bg-white"
         >
           <div
             ref={stageRef}
@@ -274,11 +274,10 @@ export default function ReelShowcase() {
               perspective: '1400px',
               background: 'radial-gradient(ellipse at 50% 40%, #dce8ff 0%, #ffffff 70%)',
             }}
-            className="dark:[background:radial-gradient(ellipse_at_50%_40%,#10244f_0%,#050d24_70%)]"
           >
             {/* Section title */}
             <div className="absolute top-8 left-0 right-0 text-center z-10 pointer-events-none">
-              <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase">
+              <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black tracking-tight uppercase">
                 {t('reel.title')}
               </h2>
               <p className="font-mono text-xs text-zinc-500 mt-2 tracking-widest uppercase">

@@ -13,10 +13,10 @@ html {
   font-size: 14.5px; /* Scales down the entire site slightly */
 }
 
-html.dark,
-body.dark,
-.dark {
-  background-color: #050d24;
+html,
+body {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 /* Custom layout and mask utility classes */
@@ -35,14 +35,14 @@ body.dark,
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #050d24;
+  background: #f4f4f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #182c5b;
+  background: #d4d4d8;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #353535;
+  background: #a1a1aa;
 }
 
 /* Infinite marquee scroll animation */

@@ -40,7 +40,7 @@ export default function Header({ rotation }: HeaderProps) {
   }, []);
 
   return (
-    <header className="bg-white/85 dark:bg-[#050d24]/85 backdrop-blur-xl border-b border-black/10 dark:border-white/10 fixed top-0 w-full z-50 px-5 md:px-16 h-16 flex justify-between items-center transition-all duration-500">
+    <header className="bg-white/90 backdrop-blur-xl border-b border-black/10 fixed top-0 w-full z-50 px-5 md:px-16 h-16 flex justify-between items-center transition-all duration-300">
       {/* Left Section: Logo */}
       <button 
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 

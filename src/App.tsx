@@ -30,7 +30,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg-white text-black dark:bg-[#050d24] dark:text-[#e5e2e1] min-h-screen antialiased flex flex-col font-sans transition-colors duration-500" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="bg-white text-black min-h-screen antialiased flex flex-col font-sans" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Fixed Header */}
       <Header 
         logoIndex={logoIndex}
@@ -50,7 +50,7 @@ export default function App() {
         <ReelShowcase />
 
         {/* CTA Banner */}
-        <section className="py-24 px-6 md:px-16 text-center border-t border-black/5 dark:border-white/5 bg-white dark:bg-[#050d24] transition-colors duration-500">
+        <section className="py-24 px-6 md:px-16 text-center border-t border-black/5 bg-white">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none">
               {t('cta.title')}

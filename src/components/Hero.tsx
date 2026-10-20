@@ -16,7 +16,7 @@ export default function Hero({ onViewPortfolio, logoIndex, rotation }: HeroProps
 
   return (
     <section
-      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#050d24] transition-colors duration-500"
+      className="relative min-h-[85dvh] flex flex-col justify-center items-center px-6 md:px-16 overflow-hidden border-b border-black/5 bg-white"
       id="hero-section"
     >
       {/* Dynamic Ambient Blur Core background */}

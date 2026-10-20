@@ -39,7 +39,7 @@ export default function LogoMarquee() {
   }, [isInteracting]);
 
   return (
-    <div className="relative w-full overflow-hidden py-14 bg-white dark:bg-[#050d24] transition-colors duration-500" id="logo-marquee-section">
+    <div className="relative w-full overflow-hidden py-14 bg-white" id="logo-marquee-section">
       
       {/* Subtle ambient glow behind the marquee */}
       <div className="absolute inset-0 pointer-events-none">
@@ -49,8 +49,8 @@ export default function LogoMarquee() {
       {/* Marquee container */}
       <div className="relative">
         {/* Edge fades — deeper and wider for premium feel */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-r from-white via-white/80 dark:from-[#050d24] dark:via-[#050d24]/80 to-transparent z-10 pointer-events-none transition-colors duration-500"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-l from-white via-white/80 dark:from-[#050d24] dark:via-[#050d24]/80 to-transparent z-10 pointer-events-none transition-colors duration-500"></div>
+        <div className="absolute left-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
 
         {/* Scrolling track with touch support */}
         <div 

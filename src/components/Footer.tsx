@@ -14,7 +14,7 @@ export default function Footer({ rotation }: FooterProps) {
   const brandNames = ['ORVA', 'VEXA'];
 
   return (
-    <footer className="bg-white dark:bg-[#050d24] border-t border-black/10 dark:border-white/10 w-full transition-colors duration-500" id="global-footer">
+    <footer className="bg-white border-t border-black/10 w-full" id="global-footer">
       <div className="flex flex-col items-center gap-8 pt-10 pb-8 px-6 text-center max-w-7xl mx-auto">
         
         {/* Logo and Headline */}
@@ -31,10 +31,10 @@ export default function Footer({ rotation }: FooterProps) {
             className="grid transition-transform duration-700 ease-in-out [transform-style:preserve-3d] place-items-center"
             style={{ transform: `rotateX(${rotation}deg)` }}
           >
-            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black dark:text-white uppercase [backface-visibility:hidden] whitespace-nowrap">
+            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black uppercase [backface-visibility:hidden] whitespace-nowrap">
               {brandNames[1]}
             </span>
-            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black dark:text-white uppercase [backface-visibility:hidden] [transform:rotateX(180deg)] whitespace-nowrap">
+            <span className="col-start-1 row-start-1 font-hanken text-4xl md:text-5xl font-extrabold tracking-tighter text-black uppercase [backface-visibility:hidden] [transform:rotateX(180deg)] whitespace-nowrap">
               {brandNames[0]}
             </span>
           </div>
@@ -47,14 +47,14 @@ export default function Footer({ rotation }: FooterProps) {
         <div className="flex flex-wrap justify-center gap-8 md:gap-12 my-4">
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200 uppercase"
+            className="font-mono text-xs tracking-widest text-zinc-500 hover:text-black transition-all duration-200 uppercase"
             id="footer-nav-home"
           >
             {t('nav.home', 'HOME')}
           </button>
           <button 
             onClick={() => document.getElementById('reel-showcase-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="font-mono text-xs tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-all duration-200 uppercase"
+            className="font-mono text-xs tracking-widest text-zinc-500 hover:text-black transition-all duration-200 uppercase"
             id="footer-nav-portfolio"
           >
             PORTFOLIO
