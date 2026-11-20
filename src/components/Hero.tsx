@@ -3,6 +3,7 @@ import React from 'react';
 export default function Hero() {
   return (
     <video
+      id="bg-hero-video"
       src="/vd1.mp4"
       autoPlay
       loop

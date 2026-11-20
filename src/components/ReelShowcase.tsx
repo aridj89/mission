@@ -13,6 +13,7 @@ export default function ReelShowcase() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const modalVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const feedRef = useRef<HTMLDivElement | null>(null);
+  const scrollRafRef = useRef<number | null>(null);
   const touchStartX = useRef<number | null>(null);
 
   const prevIdx = (activeIdx - 1 + N) % N;
@@ -36,22 +37,25 @@ export default function ReelShowcase() {
     });
   }, [N]);
 
-  // Manage playback for the 3-card carousel vs expanded viewer
+  // Pause background vd1.mp4 while expanded viewer is open to free GPU decoder
+  useEffect(() => {
+    const bgVideo = document.getElementById('bg-hero-video') as HTMLVideoElement | null;
+    if (!bgVideo) return;
+    if (isExpanded) {
+      bgVideo.pause();
+    } else if (bgVideo.paused) {
+      bgVideo.play().catch(() => {});
+    }
+  }, [isExpanded]);
+
+  // Play ONLY the 1 active video (center card in carousel, or current slide in expanded mode)
   useEffect(() => {
     videoRefs.current.forEach((video, idx) => {
       if (!video) return;
-      if (isExpanded) {
-        // Pause background carousel cards while expanded viewer is open
-        video.muted = true;
-        if (!video.paused) video.pause();
-        return;
-      }
+      const shouldPlay = !isExpanded && idx === activeIdx;
 
-      const isCenter = idx === activeIdx;
-      const isVisible = isCenter || idx === prevIdx || idx === nextIdx;
-
-      if (isVisible) {
-        video.muted = !(isCenter && soundEnabled);
+      if (shouldPlay) {
+        video.muted = !soundEnabled;
         if (video.paused) {
           video.play().catch(() => {});
         }
@@ -65,16 +69,9 @@ export default function ReelShowcase() {
 
     modalVideoRefs.current.forEach((video, idx) => {
       if (!video) return;
-      if (!isExpanded) {
-        video.muted = true;
-        if (!video.paused) video.pause();
-        return;
-      }
+      const shouldPlay = isExpanded && idx === activeIdx;
 
-      const isCurrent = idx === activeIdx;
-      const isNeighbor = Math.abs(idx - activeIdx) <= 1;
-
-      if (isCurrent) {
+      if (shouldPlay) {
         video.muted = !soundEnabled;
         if (video.paused) {
           video.play().catch(() => {});
@@ -84,12 +81,9 @@ export default function ReelShowcase() {
         if (!video.paused) {
           video.pause();
         }
-        if (isNeighbor && video.readyState === 0) {
-          video.load();
-        }
       }
     });
-  }, [activeIdx, prevIdx, nextIdx, soundEnabled, isExpanded]);
+  }, [activeIdx, soundEnabled, isExpanded]);
 
   // When opening expanded viewer, jump scroll position to activeIdx
   useEffect(() => {
@@ -140,12 +134,16 @@ export default function ReelShowcase() {
   };
 
   const handleFeedScroll = () => {
-    const feed = feedRef.current;
-    if (!feed || feed.clientHeight === 0) return;
-    const idx = Math.round(feed.scrollTop / feed.clientHeight);
-    if (idx >= 0 && idx < N && idx !== activeIdx) {
-      setActiveIdx(idx);
-    }
+    if (scrollRafRef.current !== null) return;
+    scrollRafRef.current = requestAnimationFrame(() => {
+      scrollRafRef.current = null;
+      const feed = feedRef.current;
+      if (!feed || feed.clientHeight === 0) return;
+      const idx = Math.round(feed.scrollTop / feed.clientHeight);
+      if (idx >= 0 && idx < N) {
+        setActiveIdx((curr) => (curr !== idx ? idx : curr));
+      }
+    });
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -190,13 +188,13 @@ export default function ReelShowcase() {
         <button
           onClick={goPrev}
           aria-label="Previous video"
-          className="absolute left-1 sm:left-4 md:left-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          className="absolute left-1 sm:left-4 md:left-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
           id="reel-prev-btn"
         >
           <ChevronLeft size={24} />
         </button>
 
-        {/* Video Cards */}
+        {/* Video Cards — mount <video> only for the 3 visible cards */}
         <div className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] flex items-center justify-center [transform-style:preserve-3d]">
           {REELS.map((reel, idx) => {
             const isCenter = idx === activeIdx;
@@ -208,13 +206,13 @@ export default function ReelShowcase() {
               'opacity-0 pointer-events-none [transform:translate3d(0,0,-300px)_scale(0.5)] z-0';
             if (isCenter) {
               transformClass =
-                'opacity-100 z-30 [transform:translate3d(0,0,0)_scale(1)_rotateY(0deg)] border-[#9A73F0] shadow-[0_25px_70px_rgba(123,91,224,0.55)] hover:scale-[1.03]';
+                'opacity-100 z-30 [transform:translate3d(0,0,0)_scale(1)_rotateY(0deg)] border-[#9A73F0] shadow-[0_20px_50px_rgba(123,91,224,0.5)] hover:scale-[1.02]';
             } else if (isLeft) {
               transformClass =
-                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(-72%,0,-120px)_scale(0.8)_rotateY(18deg)] sm:[transform:translate3d(-95%,0,-120px)_scale(0.82)_rotateY(18deg)] border-[#7B5BE0]/40 shadow-[0_15px_40px_rgba(0,0,0,0.6)]';
+                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(-72%,0,-120px)_scale(0.8)_rotateY(18deg)] sm:[transform:translate3d(-95%,0,-120px)_scale(0.82)_rotateY(18deg)] border-[#7B5BE0]/40 shadow-[0_12px_30px_rgba(0,0,0,0.55)]';
             } else if (isRight) {
               transformClass =
-                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(72%,0,-120px)_scale(0.8)_rotateY(-18deg)] sm:[transform:translate3d(95%,0,-120px)_scale(0.82)_rotateY(-18deg)] border-[#7B5BE0]/40 shadow-[0_15px_40px_rgba(0,0,0,0.6)]';
+                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(72%,0,-120px)_scale(0.8)_rotateY(-18deg)] sm:[transform:translate3d(95%,0,-120px)_scale(0.82)_rotateY(-18deg)] border-[#7B5BE0]/40 shadow-[0_12px_30px_rgba(0,0,0,0.55)]';
             }
 
             return (
@@ -225,23 +223,25 @@ export default function ReelShowcase() {
                   else if (isLeft) goPrev();
                   else if (isRight) goNext();
                 }}
-                className={`absolute w-[200px] sm:w-[240px] md:w-[270px] aspect-[9/16] rounded-2xl overflow-hidden bg-black border transition-all duration-500 ease-out cursor-pointer ${transformClass}`}
+                className={`absolute w-[200px] sm:w-[240px] md:w-[270px] aspect-[9/16] rounded-2xl overflow-hidden bg-[#0c071c] border transition-[transform,opacity] duration-300 ease-out will-change-[transform,opacity] cursor-pointer ${transformClass}`}
               >
-                <video
-                  ref={(el) => {
-                    videoRefs.current[idx] = el;
-                  }}
-                  src={reel.videoUrl}
-                  muted={!(isCenter && soundEnabled) || isExpanded}
-                  loop
-                  playsInline
-                  preload={isVisible ? 'auto' : 'metadata'}
-                  className="w-full h-full object-cover block pointer-events-none"
-                />
+                {isVisible && (
+                  <video
+                    ref={(el) => {
+                      videoRefs.current[idx] = el;
+                    }}
+                    src={`${reel.videoUrl}#t=0.1`}
+                    muted={!(isCenter && soundEnabled) || isExpanded}
+                    loop
+                    playsInline
+                    preload={isCenter ? 'auto' : 'metadata'}
+                    className="w-full h-full object-cover block pointer-events-none"
+                  />
+                )}
 
                 {/* Dark overlay on side cards for depth */}
                 {!isCenter && isVisible && (
-                  <div className="absolute inset-0 bg-[#0b051b]/35 transition-opacity duration-300 hover:opacity-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[#0b051b]/35 pointer-events-none" />
                 )}
 
                 {/* Controls on Center Card */}
@@ -250,7 +250,7 @@ export default function ReelShowcase() {
                     <button
                       onClick={toggleSound}
                       aria-label="Toggle audio"
-                      className={`absolute top-3 right-3 z-20 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 hover:scale-110 cursor-pointer ${
+                      className={`absolute top-3 right-3 z-20 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-transform duration-200 hover:scale-110 cursor-pointer ${
                         soundEnabled
                           ? 'bg-[#7B5BE0] border border-[#9A73F0] text-white shadow-[0_0_16px_rgba(154,115,240,0.75)]'
                           : 'bg-black/60 border border-white/30 text-white shadow-md'
@@ -273,7 +273,7 @@ export default function ReelShowcase() {
         <button
           onClick={goNext}
           aria-label="Next video"
-          className="absolute right-1 sm:right-4 md:right-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          className="absolute right-1 sm:right-4 md:right-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
           id="reel-next-btn"
         >
           <ChevronRight size={24} />
@@ -305,20 +305,20 @@ export default function ReelShowcase() {
               feedRef.current.scrollBy({ top: e.deltaY, behavior: 'smooth' });
             }
           }}
-          className="fixed inset-0 z-50 bg-[#080316]/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 z-50 bg-[#080316]/65 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           id="expanded-reel-overlay"
         >
           {/* Enlarged Video Card Container */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative h-[78dvh] sm:h-[82dvh] max-h-[760px] aspect-[9/16] max-w-[90vw] rounded-3xl overflow-hidden bg-black border-2 border-[#9A73F0] shadow-[0_25px_90px_rgba(123,91,224,0.75)] flex flex-col"
+            className="relative h-[78dvh] sm:h-[82dvh] max-h-[760px] aspect-[9/16] max-w-[90vw] rounded-3xl overflow-hidden bg-black border-2 border-[#9A73F0] shadow-[0_20px_70px_rgba(123,91,224,0.65)] flex flex-col"
           >
             {/* Top Bar inside enlarged video: Sound Toggle + Counter + Exit Button */}
             <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between pointer-events-none">
               <button
                 onClick={toggleSound}
                 aria-label="Toggle audio"
-                className={`pointer-events-auto w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 hover:scale-110 cursor-pointer ${
+                className={`pointer-events-auto w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-transform duration-200 hover:scale-110 cursor-pointer ${
                   soundEnabled
                     ? 'bg-[#7B5BE0] border border-[#9A73F0] text-white shadow-[0_0_16px_rgba(154,115,240,0.8)]'
                     : 'bg-black/65 border border-white/30 text-white'
@@ -336,7 +336,7 @@ export default function ReelShowcase() {
                 onClick={closeExpanded}
                 aria-label="Close video viewer"
                 id="close-expanded-reel-btn"
-                className="pointer-events-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#1A0844]/90 hover:bg-[#ff3b6b] border border-[#9A73F0]/70 hover:border-white text-white font-mono text-xs font-bold tracking-wider backdrop-blur-md shadow-[0_0_20px_rgba(123,91,224,0.7)] transition-all duration-200 hover:scale-105 cursor-pointer"
+                className="pointer-events-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#1A0844]/90 hover:bg-[#ff3b6b] border border-[#9A73F0]/70 hover:border-white text-white font-mono text-xs font-bold tracking-wider backdrop-blur-md shadow-[0_0_20px_rgba(123,91,224,0.7)] transition-transform duration-200 hover:scale-105 cursor-pointer"
               >
                 <X size={16} />
                 <span>FERMER</span>
@@ -349,7 +349,7 @@ export default function ReelShowcase() {
                 onClick={() => scrollToSlide(Math.max(0, activeIdx - 1), 'smooth')}
                 disabled={activeIdx === 0}
                 aria-label="Previous video"
-                className="w-9 h-9 rounded-full bg-black/60 hover:bg-[#7B5BE0] disabled:opacity-30 border border-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer"
+                className="w-9 h-9 rounded-full bg-black/60 hover:bg-[#7B5BE0] disabled:opacity-30 border border-white/25 text-white flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
               >
                 <ChevronUp size={18} />
               </button>
@@ -357,7 +357,7 @@ export default function ReelShowcase() {
                 onClick={() => scrollToSlide(Math.min(N - 1, activeIdx + 1), 'smooth')}
                 disabled={activeIdx === N - 1}
                 aria-label="Next video"
-                className="w-9 h-9 rounded-full bg-black/60 hover:bg-[#7B5BE0] disabled:opacity-30 border border-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all cursor-pointer"
+                className="w-9 h-9 rounded-full bg-black/60 hover:bg-[#7B5BE0] disabled:opacity-30 border border-white/25 text-white flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
               >
                 <ChevronDown size={18} />
               </button>
@@ -370,31 +370,36 @@ export default function ReelShowcase() {
               </span>
             </div>
 
-            {/* Vertical Snap-Scrolling Video Feed */}
+            {/* Vertical Snap-Scrolling Video Feed — mount <video> only for active + immediate neighbors */}
             <div
               ref={feedRef}
               onScroll={handleFeedScroll}
               className="w-full h-full overflow-y-auto snap-y snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             >
-              {REELS.map((reel, idx) => (
-                <div
-                  key={`expanded-${reel.id}`}
-                  onClick={toggleSound}
-                  className="w-full h-full snap-start snap-always shrink-0 relative bg-black flex items-center justify-center cursor-pointer"
-                >
-                  <video
-                    ref={(el) => {
-                      modalVideoRefs.current[idx] = el;
-                    }}
-                    src={reel.videoUrl}
-                    muted={!(idx === activeIdx && soundEnabled)}
-                    loop
-                    playsInline
-                    preload={Math.abs(idx - activeIdx) <= 1 ? 'auto' : 'metadata'}
-                    className="w-full h-full object-cover block pointer-events-none"
-                  />
-                </div>
-              ))}
+              {REELS.map((reel, idx) => {
+                const isNear = Math.abs(idx - activeIdx) <= 1;
+                return (
+                  <div
+                    key={`expanded-${reel.id}`}
+                    onClick={toggleSound}
+                    className="w-full h-full snap-start snap-always shrink-0 relative bg-[#0c071c] flex items-center justify-center cursor-pointer"
+                  >
+                    {isNear && (
+                      <video
+                        ref={(el) => {
+                          modalVideoRefs.current[idx] = el;
+                        }}
+                        src={`${reel.videoUrl}#t=0.1`}
+                        muted={!(idx === activeIdx && soundEnabled)}
+                        loop
+                        playsInline
+                        preload={idx === activeIdx ? 'auto' : 'metadata'}
+                        className="w-full h-full object-cover block pointer-events-none"
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
