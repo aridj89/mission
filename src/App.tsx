@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ReelShowcase from './components/ReelShowcase';
 import LogoMarquee from './components/LogoMarquee';
+import MissionLogo from './components/MissionLogo';
 import { ArrowUpRight } from 'lucide-react';
 
 export default function App() {
@@ -48,7 +49,8 @@ export default function App() {
               <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-white tracking-tight uppercase leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
                 {t('cta.title')}
               </h2>
-              <div className="flex justify-center pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-5 pt-2">
+                {/* WhatsApp CTA Button */}
                 <a 
                   href="https://wa.me/213540893911"
                   target="_blank"
@@ -56,7 +58,33 @@ export default function App() {
                   className="btn flex items-center justify-center gap-3 font-hanken"
                   id="connect-cta-btn"
                 >
-                  {t('cta.button')} <ArrowUpRight size={22} className="stroke-[2.5px]" />
+                  WHATSAPP <ArrowUpRight size={22} className="stroke-[2.5px]" />
+                </a>
+
+                {/* Orva Media Instagram Button (public/logo.png) */}
+                <a
+                  href="https://www.instagram.com/orva.media?fqnt=MTg3cWw3cGJwOTMxcQ%3D%3D&utm_source=qr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Orva Media Instagram"
+                  aria-label="Orva Media Instagram"
+                  id="cta-orva-insta-btn"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-[#9A73F0]/70 hover:border-white shadow-[0_0_30px_rgba(123,91,224,0.55)] hover:scale-110 active:scale-95 transition-all duration-300 block"
+                >
+                  <MissionLogo alt="Orva Media Instagram" className="w-full h-full object-cover" />
+                </a>
+
+                {/* Vexa Agency Instagram Button (public/Ve.png) */}
+                <a
+                  href="https://www.instagram.com/vexa.agency_?fqnt=cW5wZ2d6OWp0d3Jr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Vexa Agency Instagram"
+                  aria-label="Vexa Agency Instagram"
+                  id="cta-vexa-insta-btn"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-[#9A73F0]/70 hover:border-white shadow-[0_0_30px_rgba(123,91,224,0.55)] hover:scale-110 active:scale-95 transition-all duration-300 block"
+                >
+                  <img src="/Ve.png" alt="Vexa Agency Instagram" className="w-full h-full object-cover" />
                 </a>
               </div>
             </div>
