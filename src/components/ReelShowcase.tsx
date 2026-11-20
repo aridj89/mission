@@ -1,314 +1,204 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import { REELS } from '../data';
-
-const RADIUS = 520;
-const SPIN = 1;
 
 export default function ReelShowcase() {
   const { t } = useTranslation();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number>(0);
-  const targetRef = useRef(0);
-  const curRef = useRef(0);
-  // Audio state
-  const soundActiveRef = useRef(false);
-  const activeAudioIdxRef = useRef<number | null>(null);
-  const prevFrontIdxRef = useRef<number>(-1);
-  const frontIdxRef = useRef<number>(0);
-  // Auto-rotation state
-  const autoAngleRef = useRef(0);
-  const isHoveredRef = useRef(false);
+  const N = REELS.length;
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const touchStartX = useRef<number | null>(null);
 
+  const prevIdx = (activeIdx - 1 + N) % N;
+  const nextIdx = (activeIdx + 1) % N;
+
+  const goPrev = useCallback(() => {
+    setActiveIdx((curr) => (curr - 1 + N) % N);
+  }, [N]);
+
+  const goNext = useCallback(() => {
+    setActiveIdx((curr) => (curr + 1) % N);
+  }, [N]);
+
+  // Play only the 3 visible videos (center + left + right) and manage audio on center
   useEffect(() => {
-    const section = sectionRef.current;
-    const stage = stageRef.current;
-    const scene = sceneRef.current;
-    const track = trackRef.current;
-    if (!section || !stage || !scene || !track) return;
+    videoRefs.current.forEach((video, idx) => {
+      if (!video) return;
+      const isCenter = idx === activeIdx;
+      const isVisible = isCenter || idx === prevIdx || idx === nextIdx;
 
-    const N = REELS.length;
-    const step = 360 / N;
-
-    // SVG icons
-    const iconMuted = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
-    const iconSound = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
-
-    // Create cards
-    type CardData = { card: HTMLDivElement; video: HTMLVideoElement; btn: HTMLButtonElement };
-    const cards: CardData[] = [];
-
-    // Helper: mute all videos except targetIdx (if targetIdx === null, mute all)
-    const muteAllExcept = (targetIdx: number | null) => {
-      cards.forEach(({ video, btn }, idx) => {
-        if (idx === targetIdx) {
-          video.muted = false;
-          if (video.paused) video.play().catch(() => {});
-          btn.innerHTML = iconSound;
-          btn.style.background = 'rgba(31,91,255,0.85)';
-          btn.style.borderColor = '#4d86ff';
-          btn.style.boxShadow = '0 0 16px rgba(77,134,255,0.6)';
-        } else {
-          video.muted = true;
-          btn.innerHTML = iconMuted;
-          btn.style.background = 'rgba(0,0,0,0.6)';
-          btn.style.borderColor = 'rgba(255,255,255,0.3)';
-          btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
+      if (isVisible) {
+        video.muted = !(isCenter && soundEnabled);
+        if (video.paused) {
+          video.play().catch(() => {});
         }
-      });
-      activeAudioIdxRef.current = targetIdx;
-    };
-
-    // Toggle sound for a specific card
-    const handleToggleSound = (idx: number) => {
-      if (activeAudioIdxRef.current === idx && soundActiveRef.current) {
-        // Already active on this card -> mute it
-        soundActiveRef.current = false;
-        muteAllExcept(null);
       } else {
-        // Unmute this card -> automatically mutes any previous card
-        soundActiveRef.current = true;
-        muteAllExcept(idx);
-      }
-    };
-
-    REELS.forEach((reel, i) => {
-      const card = document.createElement('div');
-      card.style.cssText = `
-        position:absolute;
-        width:min(34vw,240px);
-        aspect-ratio:9/16;
-        left:calc(min(34vw,240px)/-2);
-        top:calc(min(34vw,240px)*-0.89);
-        border-radius:16px;
-        overflow:hidden;
-        background:#000;
-        box-shadow:0 20px 60px rgba(0,0,0,0.5);
-        backface-visibility:hidden;
-        will-change:transform,opacity;
-        border:1px solid rgba(77,134,255,0.45);
-        cursor:pointer;
-      `;
-
-      const video = document.createElement('video');
-      video.src = reel.videoUrl;
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.autoplay = true;
-      video.preload = 'auto';
-      video.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-      video.play().catch(() => {});
-
-      // Sound toggle button
-      const btn = document.createElement('button');
-      btn.innerHTML = iconMuted;
-      btn.setAttribute('aria-label', 'Toggle audio');
-      btn.style.cssText = `
-        position:absolute;
-        top:12px;
-        right:12px;
-        z-index:20;
-        width:38px;
-        height:38px;
-        border-radius:50%;
-        background:rgba(0,0,0,0.6);
-        border:1px solid rgba(255,255,255,0.3);
-        color:#fff;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        cursor:pointer;
-        backdrop-filter:blur(8px);
-        opacity:0;
-        transition:opacity 0.25s, transform 0.2s, background 0.2s, box-shadow 0.2s;
-        pointer-events:none;
-        box-shadow:0 4px 12px rgba(0,0,0,0.4);
-      `;
-      btn.onmouseenter = () => { btn.style.transform = 'scale(1.12)'; };
-      btn.onmouseleave = () => { btn.style.transform = 'scale(1)'; };
-
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        handleToggleSound(i);
-      };
-
-      // Click card to toggle sound if in front
-      card.onclick = () => {
-        if (frontIdxRef.current === i) {
-          handleToggleSound(i);
+        video.muted = true;
+        if (!video.paused) {
+          video.pause();
         }
-      };
-
-      card.appendChild(video);
-      card.appendChild(btn);
-      scene.appendChild(card);
-      cards.push({ card, video, btn });
+      }
     });
+  }, [activeIdx, prevIdx, nextIdx, soundEnabled]);
 
-    // Scroll handler
-    const handleScroll = () => {
-      if (!track) return;
-      const trackHeight = track.scrollHeight - window.innerHeight;
-      const scrolled = window.scrollY - (track.getBoundingClientRect().top + window.scrollY);
-      targetRef.current = trackHeight > 0 ? Math.max(0, Math.min(1, scrolled / trackHeight)) : 0;
+  // Keyboard navigation
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goPrev();
+      else if (e.key === 'ArrowRight') goNext();
     };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [goPrev, goNext]);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+  const toggleSound = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSoundEnabled((prev) => !prev);
+  };
 
-    // Hover & touch listeners to pause auto-rotation on user inspection
-    const onEnter = () => { isHoveredRef.current = true; };
-    const onLeave = () => { isHoveredRef.current = false; };
-    stage.addEventListener('mouseenter', onEnter);
-    stage.addEventListener('mouseleave', onLeave);
-    stage.addEventListener('touchstart', onEnter, { passive: true });
-    stage.addEventListener('touchend', onLeave, { passive: true });
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
 
-    // Animation loop
-    const frame = () => {
-      curRef.current += (targetRef.current - curRef.current) * 0.06;
-
-      // Auto-rotation: continuously rotates smoothly unless hovered or active audio is playing
-      if (!isHoveredRef.current && !soundActiveRef.current) {
-        autoAngleRef.current += 0.16;
-      }
-
-      // Combine auto-rotation + user scroll control
-      const angle = autoAngleRef.current + curRef.current * 360 * SPIN;
-      const r = Math.min(RADIUS, window.innerWidth * 0.55);
-
-      let maxDepth = -1;
-      let frontIdx = 0;
-
-      cards.forEach(({ card, video, btn }, i) => {
-        const a = i * step + angle;
-        const depth = (Math.cos((a * Math.PI) / 180) + 1) / 2;
-
-        // Blur for cards in the back
-        const blurAmount = depth < 0.5 ? ((0.5 - depth) * 10).toFixed(1) : '0';
-
-        // Exact same horizontal level for all cards (no vertical wave, no tilt)
-        card.style.transform = `rotateY(${a}deg) translateZ(${r}px) scale(${(0.82 + 0.18 * depth).toFixed(3)})`;
-        card.style.opacity = (0.35 + 0.65 * depth).toFixed(3);
-        card.style.zIndex = String(Math.round(depth * 100));
-        card.style.filter = `blur(${blurAmount}px)`;
-
-        const isFront = depth > 0.4;
-        if (isFront && video.paused) video.play().catch(() => {});
-        if (!isFront && !video.paused) video.pause();
-
-        // Track the most front card
-        if (depth > maxDepth) {
-          maxDepth = depth;
-          frontIdx = i;
-        }
-
-        // Hide sound btn by default
-        btn.style.opacity = '0';
-        btn.style.pointerEvents = 'none';
-      });
-
-      frontIdxRef.current = frontIdx;
-
-      // Handle front card transition for audio:
-      // If sound is active and front card changed, mute previous and unmute new front
-      if (frontIdx !== prevFrontIdxRef.current) {
-        if (soundActiveRef.current) {
-          muteAllExcept(frontIdx);
-        } else {
-          muteAllExcept(null);
-        }
-        prevFrontIdxRef.current = frontIdx;
-      }
-
-      // Show sound btn only on the frontmost card
-      const front = cards[frontIdx];
-      if (front && maxDepth > 0.75) {
-        front.btn.style.opacity = '1';
-        front.btn.style.pointerEvents = 'auto';
-      }
-
-      scene.style.transform = `translateZ(-${(r * 0.25).toFixed(0)}px)`;
-      rafRef.current = requestAnimationFrame(frame);
-    };
-
-    rafRef.current = requestAnimationFrame(frame);
-
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('scroll', handleScroll);
-      stage.removeEventListener('mouseenter', onEnter);
-      stage.removeEventListener('mouseleave', onLeave);
-      stage.removeEventListener('touchstart', onEnter);
-      stage.removeEventListener('touchend', onLeave);
-      muteAllExcept(null);
-      cards.forEach(({ card, video }) => {
-        video.pause();
-        video.src = '';
-        card.remove();
-      });
-    };
-  }, []);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX > 0) goPrev();
+      else goNext();
+    }
+  };
 
   return (
-    <>
-      <div
-        ref={trackRef}
-        id="reel-showcase-section"
-        style={{ height: '600vh', position: 'relative' }}
-        className="bg-white"
-      >
-        <div
-          ref={sectionRef}
-          style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}
-          className="bg-white"
-        >
-          <div
-            ref={stageRef}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              perspective: '1400px',
-              background: 'radial-gradient(ellipse at 50% 40%, #dce8ff 0%, #ffffff 70%)',
-            }}
-          >
-            {/* Section title */}
-            <div className="absolute top-8 left-0 right-0 text-center z-10 pointer-events-none">
-              <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black tracking-tight uppercase">
-                {t('reel.title')}
-              </h2>
-              <p className="font-mono text-xs text-zinc-500 mt-2 tracking-widest uppercase">
-                {t('reel.scroll_hint', 'Scroll to explore')}
-              </p>
-            </div>
-
-            {/* 3D Scene anchor */}
-            <div
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                width: 0,
-                height: 0,
-                transformStyle: 'preserve-3d',
-                willChange: 'transform',
-              }}
-              ref={sceneRef}
-            />
-
-            {/* Scroll indicator */}
-            <div className="absolute bottom-8 left-0 right-0 flex justify-center z-10 pointer-events-none">
-              <div className="flex flex-col items-center gap-2 animate-bounce opacity-40">
-                <div className="w-px h-12 bg-current" />
-                <span className="font-mono text-[10px] tracking-widest uppercase text-zinc-500">scroll</span>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section
+      id="reel-showcase-section"
+      className="relative z-20 min-h-[calc(100dvh-4rem)] w-full flex flex-col justify-between items-center py-10 sm:py-14 px-4 sm:px-8 overflow-hidden"
+      style={{
+        background: 'radial-gradient(ellipse at 50% 45%, rgba(70, 45, 128, 0.38) 0%, rgba(26, 8, 68, 0.35) 52%, rgba(11, 5, 27, 0.32) 100%)',
+      }}
+    >
+      {/* Section title */}
+      <div className="text-center z-20 space-y-2">
+        <h2 className="font-hanken text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight uppercase">
+          {t('reel.title')}
+        </h2>
+        <p className="font-mono text-xs text-purple-200/75 tracking-widest uppercase">
+          {activeIdx + 1} / {N}
+        </p>
       </div>
-    </>
+
+      {/* 3-Video Stage (1 Center, 1 Left, 1 Right) */}
+      <div
+        className="relative w-full max-w-5xl flex-1 flex items-center justify-center my-4 select-none [perspective:1400px]"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Left Navigation Button */}
+        <button
+          onClick={goPrev}
+          aria-label="Previous video"
+          className="absolute left-1 sm:left-4 md:left-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          id="reel-prev-btn"
+        >
+          <ChevronLeft size={24} />
+        </button>
+
+        {/* Video Cards */}
+        <div className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] flex items-center justify-center [transform-style:preserve-3d]">
+          {REELS.map((reel, idx) => {
+            const isCenter = idx === activeIdx;
+            const isLeft = idx === prevIdx;
+            const isRight = idx === nextIdx;
+            const isVisible = isCenter || isLeft || isRight;
+
+            let transformClass =
+              'opacity-0 pointer-events-none [transform:translate3d(0,0,-300px)_scale(0.5)] z-0';
+            if (isCenter) {
+              transformClass =
+                'opacity-100 z-30 [transform:translate3d(0,0,0)_scale(1)_rotateY(0deg)] border-[#9A73F0] shadow-[0_25px_70px_rgba(123,91,224,0.55)]';
+            } else if (isLeft) {
+              transformClass =
+                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(-72%,0,-120px)_scale(0.8)_rotateY(18deg)] sm:[transform:translate3d(-95%,0,-120px)_scale(0.82)_rotateY(18deg)] border-[#7B5BE0]/40 shadow-[0_15px_40px_rgba(0,0,0,0.6)]';
+            } else if (isRight) {
+              transformClass =
+                'opacity-55 hover:opacity-85 z-20 [transform:translate3d(72%,0,-120px)_scale(0.8)_rotateY(-18deg)] sm:[transform:translate3d(95%,0,-120px)_scale(0.82)_rotateY(-18deg)] border-[#7B5BE0]/40 shadow-[0_15px_40px_rgba(0,0,0,0.6)]';
+            }
+
+            return (
+              <div
+                key={reel.id}
+                onClick={() => {
+                  if (isCenter) toggleSound();
+                  else if (isLeft) goPrev();
+                  else if (isRight) goNext();
+                }}
+                className={`absolute w-[200px] sm:w-[240px] md:w-[270px] aspect-[9/16] rounded-2xl overflow-hidden bg-black border transition-all duration-500 ease-out cursor-pointer ${transformClass}`}
+              >
+                <video
+                  ref={(el) => {
+                    videoRefs.current[idx] = el;
+                  }}
+                  src={reel.videoUrl}
+                  muted={!(isCenter && soundEnabled)}
+                  loop
+                  playsInline
+                  preload={isVisible ? 'auto' : 'metadata'}
+                  className="w-full h-full object-cover block pointer-events-none"
+                />
+
+                {/* Dark overlay on side cards for depth */}
+                {!isCenter && isVisible && (
+                  <div className="absolute inset-0 bg-[#0b051b]/35 transition-opacity duration-300 hover:opacity-10 pointer-events-none" />
+                )}
+
+                {/* Sound Toggle Button on Center Card */}
+                {isCenter && (
+                  <button
+                    onClick={toggleSound}
+                    aria-label="Toggle audio"
+                    className={`absolute top-3 right-3 z-20 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 hover:scale-110 cursor-pointer ${
+                      soundEnabled
+                        ? 'bg-[#7B5BE0] border border-[#9A73F0] text-white shadow-[0_0_16px_rgba(154,115,240,0.75)]'
+                        : 'bg-black/60 border border-white/30 text-white shadow-md'
+                    }`}
+                  >
+                    {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Right Navigation Button */}
+        <button
+          onClick={goNext}
+          aria-label="Next video"
+          className="absolute right-1 sm:right-4 md:right-8 z-40 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#1A0844]/85 hover:bg-[#7B5BE0] border border-[#9A73F0]/50 text-white flex items-center justify-center backdrop-blur-md shadow-[0_0_25px_rgba(123,91,224,0.45)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          id="reel-next-btn"
+        >
+          <ChevronRight size={24} />
+        </button>
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="flex items-center justify-center gap-2 z-20">
+        {REELS.map((reel, idx) => (
+          <button
+            key={reel.id}
+            onClick={() => setActiveIdx(idx)}
+            aria-label={`Video ${idx + 1}`}
+            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+              idx === activeIdx
+                ? 'w-7 bg-[#9A73F0] shadow-[0_0_10px_#9A73F0]'
+                : 'w-2 bg-white/25 hover:bg-white/50'
+            }`}
+          />
+        ))}
+      </div>
+    </section>
   );
 }

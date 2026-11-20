@@ -31,7 +31,7 @@ export default function BentoGrid() {
         
         {/* Title Block */}
         <div className="space-y-2">
-          <span className="font-mono text-[10px] text-[#0071ec] tracking-widest uppercase font-semibold">{t('bento.label')}</span>
+          <span className="font-mono text-[10px] text-[#7B5BE0] tracking-widest uppercase font-semibold">{t('bento.label')}</span>
           <h2 className="font-hanken text-3xl sm:text-5xl font-extrabold text-black dark:text-white tracking-tight uppercase">{t('bento.title')}</h2>
           <p className="font-sans text-xs sm:text-sm text-zinc-500 uppercase tracking-wide">{t('bento.subtitle')}</p>
         </div>
@@ -40,7 +40,7 @@ export default function BentoGrid() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6" id="bento-box-grid">
           
           {/* Project 1: Vortex */}
-          <div className="md:col-span-8 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] dark:hover:border-[#0071ec] transition-all duration-300 p-8 rounded-lg flex flex-col justify-between min-h-[460px]">
+          <div className="md:col-span-8 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#7B5BE0] dark:hover:border-[#7B5BE0] transition-all duration-300 p-8 rounded-lg flex flex-col justify-between min-h-[460px]">
             <div className="space-y-4">
               <div className="flex gap-2">
                 {projectVortex.tags?.map(tag => (
@@ -68,7 +68,7 @@ export default function BentoGrid() {
           </div>
 
           {/* Project 2: Agency Mono */}
-          <div className="md:col-span-4 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] transition-all duration-300 p-8 rounded-lg flex flex-col justify-between">
+          <div className="md:col-span-4 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#7B5BE0] transition-all duration-300 p-8 rounded-lg flex flex-col justify-between">
             <div className="space-y-4">
               <span className="px-3 py-1 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-wider text-zinc-400 inline-block">
                 {projectMono.category}
@@ -104,7 +104,7 @@ export default function BentoGrid() {
                 value={specimenText}
                 onChange={(e) => setSpecimenText(e.target.value.toUpperCase().replace(/\s/g, '_'))}
                 placeholder="EDIT_SPECIMEN..."
-                className="w-full bg-[#131212] border border-white/5 text-[9px] px-2 py-1.5 focus:outline-none focus:border-[#0071ec] text-zinc-300 text-center font-mono"
+                className="w-full bg-[#131212] border border-white/5 text-[9px] px-2 py-1.5 focus:outline-none focus:border-[#7B5BE0] text-zinc-300 text-center font-mono"
                 maxLength={25}
                 id="specimen-textbox"
               />
@@ -120,7 +120,7 @@ export default function BentoGrid() {
           </div>
 
           {/* Project 3: Manifesto */}
-          <div className="md:col-span-4 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] transition-all duration-300 rounded-lg overflow-hidden flex flex-col justify-between">
+          <div className="md:col-span-4 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#7B5BE0] transition-all duration-300 rounded-lg overflow-hidden flex flex-col justify-between">
             <div className="p-8 space-y-4">
               <span className="px-3 py-1 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-wider text-zinc-400 inline-block">
                 {projectManifesto.category}
@@ -144,7 +144,7 @@ export default function BentoGrid() {
           </div>
 
           {/* Project 4: Onyx */}
-          <div className="md:col-span-8 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] transition-all duration-300 p-8 rounded-lg flex flex-col md:flex-row gap-8 min-h-[300px]">
+          <div className="md:col-span-8 group relative bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#7B5BE0] transition-all duration-300 p-8 rounded-lg flex flex-col md:flex-row gap-8 min-h-[300px]">
             <div className="flex-1 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <span className="px-3 py-1 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-wider text-zinc-400 inline-block">
@@ -161,10 +161,10 @@ export default function BentoGrid() {
               <div className="pt-2">
                 <a 
                   href="#digital-motion-reels"
-                  className="inline-flex items-center gap-2 font-mono text-xs text-black dark:text-white hover:text-[#0071ec] dark:hover:text-[#0071ec] transition-colors leading-none"
+                  className="inline-flex items-center gap-2 font-mono text-xs text-black dark:text-white hover:text-[#7B5BE0] dark:hover:text-[#7B5BE0] transition-colors leading-none"
                   id="case-study-trigger"
                 >
-                  {t('bento.explore_case')} <CornerDownRight size={14} className="text-[#0071ec]" />
+                  {t('bento.explore_case')} <CornerDownRight size={14} className="text-[#7B5BE0]" />
                 </a>
               </div>
             </div>
@@ -217,7 +217,7 @@ export default function BentoGrid() {
             <div className="pt-4 flex justify-end">
               <button 
                 onClick={() => setShowSpecimenDrawer(false)}
-                className="px-6 py-2.5 bg-black text-white dark:bg-white dark:text-black font-mono text-xs tracking-widest uppercase hover:bg-[#0071ec] hover:text-white transition-all duration-300 rounded-none"
+                className="px-6 py-2.5 bg-black text-white dark:bg-white dark:text-black font-mono text-xs tracking-widest uppercase hover:bg-[#7B5BE0] hover:text-white transition-all duration-300 rounded-none"
                 id="specimen-drawer-agree"
               >
                 {t('bento.acknowledge')}

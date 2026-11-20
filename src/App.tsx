@@ -14,7 +14,7 @@ export default function App() {
   const [logoIndex, setLogoIndex] = useState(1);
   const [rotation, setRotation] = useState(0);
 
-  // Handle global synchronised rotation timer (Header Logo & Hero & Footer)
+  // Handle global synchronised rotation timer (Header Logo & Footer)
   useEffect(() => {
     const interval = setInterval(() => {
       setRotation(prev => prev + 180);
@@ -25,12 +25,8 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const scrollToPortfolio = () => {
-    document.getElementById('reel-showcase-section')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="bg-white text-black min-h-screen antialiased flex flex-col font-sans" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="bg-[#0c071c] text-white min-h-screen antialiased flex flex-col font-sans relative" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Fixed Header */}
       <Header 
         logoIndex={logoIndex}
@@ -38,40 +34,37 @@ export default function App() {
       />
 
       {/* Main Content */}
-      <main className="flex-grow pt-16" id="primary-main-viewport">
-        <Hero 
-          onViewPortfolio={scrollToPortfolio}
-          logoIndex={logoIndex}
-          rotation={rotation}
-        />
+      <main className="relative z-10 flex-grow pt-16" id="primary-main-viewport">
+        <Hero />
 
         <LogoMarquee />
 
         <ReelShowcase />
 
-        {/* CTA Banner */}
-        <section className="py-24 px-6 md:px-16 text-center border-t border-black/5 bg-white">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-none">
-              {t('cta.title')}
-            </h2>
-            <div className="flex justify-center pt-2">
-              <a 
-                href="https://wa.me/213540893911"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn flex items-center justify-center gap-3 font-hanken"
-                id="connect-cta-btn"
-              >
-                {t('cta.button')} <ArrowUpRight size={22} className="stroke-[2.5px]" />
-              </a>
+        {/* CTA Banner + Universal Footer with translucent gradient over video */}
+        <div className="relative z-20 bg-gradient-to-b from-[#16083a]/30 via-[#281262]/40 to-[#080316]/55">
+          <section className="py-24 px-6 md:px-16 text-center">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-white tracking-tight uppercase leading-none drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+                {t('cta.title')}
+              </h2>
+              <div className="flex justify-center pt-2">
+                <a 
+                  href="https://wa.me/213540893911"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn flex items-center justify-center gap-3 font-hanken"
+                  id="connect-cta-btn"
+                >
+                  {t('cta.button')} <ArrowUpRight size={22} className="stroke-[2.5px]" />
+                </a>
+              </div>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
 
-      {/* Universal Footer */}
-      <Footer logoIndex={logoIndex} rotation={rotation} />
+          <Footer logoIndex={logoIndex} rotation={rotation} />
+        </div>
+      </main>
     </div>
   );
 }

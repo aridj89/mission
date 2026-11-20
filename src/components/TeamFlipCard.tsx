@@ -16,7 +16,7 @@ export default function TeamFlipCard({ memberFront, memberBack, isFlipped, class
 
   const CardFace = ({ member, isBack = false }: { member: TeamMember, isBack?: boolean }) => (
     <div 
-      className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-xl sm:rounded-2xl overflow-hidden bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#0071ec] flex flex-col justify-end shadow-xl transition-all duration-500 group"
+      className="absolute inset-0 w-full h-full [backface-visibility:hidden] rounded-xl sm:rounded-2xl overflow-hidden bg-gray-50 dark:bg-[#1A1A1A] border border-black/10 dark:border-white/10 hover:border-[#7B5BE0] flex flex-col justify-end shadow-xl transition-all duration-500 group"
       style={isBack ? { transform: 'rotateY(180deg)' } : {}}
     >
       {member.imageUrl ? (
@@ -28,7 +28,7 @@ export default function TeamFlipCard({ memberFront, memberBack, isFlipped, class
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 pointer-events-none group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute bottom-0 left-0 p-2 sm:p-6 w-full z-10 space-y-0.5 sm:space-y-1 pointer-events-none translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-            <p className="font-mono text-[5px] sm:text-[10px] text-[#0071ec] uppercase tracking-widest font-bold drop-shadow-md leading-tight">
+            <p className="font-mono text-[5px] sm:text-[10px] text-[#7B5BE0] uppercase tracking-widest font-bold drop-shadow-md leading-tight">
               {t(`team_roles.${member.id}`)}
             </p>
             <h4 className="font-hanken text-[10px] sm:text-2xl font-bold text-white tracking-tight drop-shadow-md leading-tight">

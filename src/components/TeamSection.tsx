@@ -5,6 +5,7 @@ import { TeamMember } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TeamFlipCard from './TeamFlipCard';
+import MissionLogo from './MissionLogo';
 
 export default function TeamSection({ isGlobalFlipped = false }: { isGlobalFlipped?: boolean }) {
   const { t, i18n } = useTranslation();
@@ -77,7 +78,7 @@ export default function TeamSection({ isGlobalFlipped = false }: { isGlobalFlipp
           >
             <motion.span 
               variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-              className="font-mono text-xs text-[#0071ec] tracking-widest uppercase block font-semibold"
+              className="font-mono text-xs text-[#7B5BE0] tracking-widest uppercase block font-semibold"
             >
               {t('team.label')}
             </motion.span>
@@ -92,11 +93,18 @@ export default function TeamSection({ isGlobalFlipped = false }: { isGlobalFlipp
                   transition={{ duration: 0.4 }}
                   className="flex flex-col items-center gap-2 sm:gap-4"
                 >
-                  <img 
-                    src={isGlobalFlipped ? "/logo.jpg" : "/Ve.png"} 
-                    alt={isGlobalFlipped ? "Mission Verse" : "Vexa"} 
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-md object-cover shadow-lg"
-                  />
+                  {isGlobalFlipped ? (
+                    <MissionLogo
+                      alt="Mission Verse"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-md object-cover shadow-lg"
+                    />
+                  ) : (
+                    <img
+                      src="/Ve.png"
+                      alt="Vexa"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-md object-cover shadow-lg"
+                    />
+                  )}
                   <h2 className="font-hanken text-4xl sm:text-6xl font-extrabold text-black dark:text-white uppercase tracking-tight">
                     {isGlobalFlipped ? "MISSION VERSE" : "VEXA"}
                   </h2>

@@ -15,8 +15,9 @@ html {
 
 html,
 body {
-  background-color: #ffffff;
-  color: #000000;
+  background: linear-gradient(135deg, #0b051b 0%, #1A0844 50%, #2a1266 100%);
+  background-color: #0c071c;
+  color: #ffffff;
 }
 
 /* Custom layout and mask utility classes */
@@ -26,7 +27,7 @@ body {
 }
 
 .glow-btn:hover {
-  box-shadow: 0 0 20px rgba(0, 113, 236, 0.4);
+  box-shadow: 0 0 20px rgba(123, 91, 224, 0.4);
 }
 
 /* Custom scrollbar to keep it sleek and minimal */
@@ -35,14 +36,14 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f4f4f5;
+  background: #0c071c;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #462D80;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #7B5BE0;
 }
 
 /* Infinite marquee scroll animation */
@@ -67,23 +68,23 @@ body {
 .btn {
   font-size: 1.2rem;
   padding: 1rem 2.5rem;
-  border: none;
+  border: 1px solid rgba(154, 115, 240, 0.45);
   outline: none;
   border-radius: 0.4rem;
   cursor: pointer;
   text-transform: uppercase;
-  background-color: rgb(240, 240, 240);
-  color: rgb(14, 14, 26);
+  background: linear-gradient(135deg, #1A0844 0%, #6446A6 55%, #9A73F0 100%);
+  color: #ffffff;
   font-weight: 700;
   transition: 0.6s;
-  box-shadow: 0px 0px 30px rgba(31, 215, 232, 0.3);
-  -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(255,255,255,0.2));
+  box-shadow: 0px 0px 35px rgba(123, 91, 224, 0.45);
+  -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.35));
 }
 
 .dark .btn {
   background-color: rgb(14, 14, 26);
   color: rgb(234, 234, 234);
-  box-shadow: 0px 0px 60px #1f4c65;
+  box-shadow: 0px 0px 60px #462D80;
   -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.4));
 }
 
@@ -92,13 +93,13 @@ body {
 }
 
 .btn:hover {
-  background: rgb(2,29,78);
-  background: linear-gradient(270deg, rgba(210, 230, 255, 0.681) 0%, rgba(131, 245, 252, 0.873) 60%);
-  color: rgb(4, 4, 38);
+  background: #1A0844;
+  background: linear-gradient(135deg, #1A0844 0%, #6446A6 55%, #9A73F0 100%);
+  color: #ffffff;
 }
 
 .dark .btn:hover {
-  background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(31, 215, 232, 0.873) 60%);
+  background: linear-gradient(135deg, #1A0844 0%, #6446A6 55%, #9A73F0 100%);
 }
 
 /* Category filter button styles */

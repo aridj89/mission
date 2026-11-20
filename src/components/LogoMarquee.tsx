@@ -39,18 +39,15 @@ export default function LogoMarquee() {
   }, [isInteracting]);
 
   return (
-    <div className="relative w-full overflow-hidden py-14 bg-white" id="logo-marquee-section">
+    <div className="relative z-20 w-full overflow-hidden py-16 bg-gradient-to-b from-[#140735]/20 via-[#1A0844]/35 to-[#12062e]/30" id="logo-marquee-section">
       
       {/* Subtle ambient glow behind the marquee */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-32 bg-[radial-gradient(ellipse_at_center,_rgba(0,113,236,0.06)_0%,_transparent_70%)] blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-32 bg-[radial-gradient(ellipse_at_center,_rgba(154,115,240,0.18)_0%,_transparent_70%)] blur-2xl"></div>
       </div>
 
-      {/* Marquee container */}
-      <div className="relative">
-        {/* Edge fades — deeper and wider for premium feel */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+      {/* Marquee container with transparent CSS mask edge fades so video shows through */}
+      <div className="relative [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
 
         {/* Scrolling track with touch support */}
         <div 
@@ -69,7 +66,7 @@ export default function LogoMarquee() {
                   key={`${setIndex}-${logo.id}`}
                   className="flex-shrink-0 mx-8 sm:mx-14 md:mx-20 flex items-center justify-center group py-2"
                 >
-                  <div className="relative p-4 rounded-xl border border-transparent group-hover:border-black/10 dark:group-hover:border-white/10 group-hover:bg-black/[0.03] dark:group-hover:bg-white/[0.03] transition-all duration-500">
+                  <div className="relative p-4 rounded-xl border border-transparent group-hover:border-white/15 group-hover:bg-white/[0.05] transition-all duration-500">
                     <img
                       src={logo.src}
                       alt={logo.alt}

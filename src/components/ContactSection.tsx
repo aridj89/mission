@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Send, ExternalLink, MessageSquare } from 'lucide-react';
+import MissionLogo from './MissionLogo';
 
 export default function ContactSection() {
   const { t } = useTranslation();
@@ -49,7 +50,7 @@ export default function ContactSection() {
       handle: '@mission__verse',
       desc: 'Media production & brand motion — follow Mission Verse',
       href: 'https://www.instagram.com/mission__verse?igsh=ZHp1dWgzb3pzNXlv&utm_source=qr',
-      logo: '/logo.jpg',
+      logo: '/logo.png',
     },
   ];
 
@@ -60,7 +61,7 @@ export default function ContactSection() {
         {/* Section: CONNECT channel links */}
         <div className="space-y-12" id="social-connect-area">
           <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <span className="font-mono text-xs text-[#0071ec] tracking-widest block font-semibold uppercase">{t('contact.connect_label')}</span>
+            <span className="font-mono text-xs text-[#7B5BE0] tracking-widest block font-semibold uppercase">{t('contact.connect_label')}</span>
             <h2 className="font-hanken text-3xl sm:text-5xl font-extrabold text-black dark:text-white uppercase tracking-tight">{t('contact.connect_title')}</h2>
             <p className="font-sans text-sm text-zinc-500 dark:text-zinc-400 font-light leading-relaxed">
               {t('contact.connect_desc')}
@@ -156,11 +157,15 @@ export default function ContactSection() {
                         background: 'linear-gradient(135deg, rgba(253,164,175,0.18) 0%, rgba(168,85,247,0.12) 100%)',
                       }}
                     >
-                      <img
-                        src={profile.logo}
-                        alt={profile.label}
-                        className="w-full h-full object-cover"
-                      />
+                      {profile.logo === '/logo.png' ? (
+                        <MissionLogo alt={profile.label} className="w-full h-full object-cover" />
+                      ) : (
+                        <img
+                          src={profile.logo}
+                          alt={profile.label}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
 
                     <div className="flex-1 min-w-0 space-y-0.5">
